@@ -1,5 +1,6 @@
 package com.jakubstas.foosie.rest;
 
+import com.jakubstas.foosie.configuration.Defaults;
 import com.jakubstas.foosie.slack.SlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,5 +19,12 @@ public class PingController {
         slackService.postMessage(message);
 
         return "Ping complete!";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String createGame(@RequestParam(value = "team", defaultValue = Defaults.defaultTeam) String team, @RequestParam(value = "msg", defaultValue = "Hello world!") String message) {
+        slackService.postMessage("Recieved team=" + team + "; msg=" + message);
+
+        return "Game set up!";
     }
 }

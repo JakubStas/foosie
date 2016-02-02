@@ -9,6 +9,8 @@ public class SlackProperties {
 
     private String outgoinggWebhook;
 
+    private String slashToken;
+
     public String getIncomingWebhook() {
         return incomingWebhook;
     }
@@ -23,5 +25,13 @@ public class SlackProperties {
 
     public void setOutgoinggWebhook(String outgoinggWebhook) {
         this.outgoinggWebhook = outgoinggWebhook;
+    }
+
+    public String getSlashToken() {
+        return slashToken;
+    }
+
+    public void setSlashToken(String slashToken) {
+        this.slashToken = slashToken;
     }
 }
