@@ -1,4 +1,4 @@
-package com.jakubstas.foosie;
+package com.jakubstas.foosie.rest;
 
 /**
  * Created by stasj on 02/02/16.
