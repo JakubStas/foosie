@@ -61,6 +61,7 @@ public class GameController {
     public void joinGame(@RequestParam(value = "token", required = false) String token,
                          @RequestParam(value = "user_name", required = false) String userName) {
         logger.info("token: " + token);
+        logger.info("expected token: " + slackProperties.getIaminCommandToken());
         logger.info("userName: " + userName);
 
         if (slackProperties.getIaminCommandToken().equals(token)) {
