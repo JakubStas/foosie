@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,11 @@ public class GameController {
     private String mostRecentResponseUrl;
 
     private final Pattern timePattern = Pattern.compile("[0-9]{2}:[0-9]{2}");
+
+    @PostConstruct
+    public void debug() {
+        logger.info("I am in token = " + slackProperties.getIaminCommandToken());
+    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void createGame(@RequestParam(value = "token", required = false) String token,
