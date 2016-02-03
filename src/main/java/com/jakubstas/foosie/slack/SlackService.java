@@ -24,7 +24,7 @@ public class SlackService {
     public void postMessage(final String message) {
         logger.info("Posting message: {}", message);
 
-        final URI uri = URI.create(slackProperties.getIncomingWebhook());
+        final URI uri = URI.create(slackProperties.getIncomingWebHookUri());
         final SlackMessage slackMessage = new SlackMessage(message);
 
         restTemplate.postForLocation(uri, slackMessage);

@@ -5,33 +5,23 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "slack")
 public class SlackProperties {
 
-    private String incomingWebhook;
+    private String incomingWebHookUri;
 
-    private String outgoinggWebhook;
+    private String slashCommandToken;
 
-    private String slashToken;
-
-    public String getIncomingWebhook() {
-        return incomingWebhook;
+    public String getIncomingWebHookUri() {
+        return incomingWebHookUri;
     }
 
-    public void setIncomingWebhook(String incomingWebhook) {
-        this.incomingWebhook = incomingWebhook;
+    public void setIncomingWebHookUri(String incomingWebHookUri) {
+        this.incomingWebHookUri = incomingWebHookUri;
     }
 
-    public String getOutgoinggWebhook() {
-        return outgoinggWebhook;
+    public String getSlashCommandToken() {
+        return slashCommandToken;
     }
 
-    public void setOutgoinggWebhook(String outgoinggWebhook) {
-        this.outgoinggWebhook = outgoinggWebhook;
-    }
-
-    public String getSlashToken() {
-        return slashToken;
-    }
-
-    public void setSlashToken(String slashToken) {
-        this.slashToken = slashToken;
+    public void setSlashCommandToken(String slashCommandToken) {
+        this.slashCommandToken = slashCommandToken;
     }
 }
