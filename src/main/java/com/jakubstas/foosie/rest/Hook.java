@@ -10,32 +10,32 @@ public class Hook {
     @JsonProperty
     private String token;
 
-    @JsonProperty
+    @JsonProperty("team_id")
     private String teamId;
 
-    @JsonProperty
+    @JsonProperty("team_domain")
     private String teamDomain;
 
-    @JsonProperty
+    @JsonProperty("channel_id")
     private String channelId;
 
-    @JsonProperty
+    @JsonProperty("channel_name")
     private String channelName;
 
-    @JsonProperty
-    private String timestamp;
+    @JsonProperty("command")
+    private String command;
 
-    @JsonProperty
+    @JsonProperty("user_id")
     private String userId;
 
-    @JsonProperty
+    @JsonProperty("user_name")
     private String userName;
 
-    @JsonProperty
+    @JsonProperty("text")
     private String text;
 
-    @JsonProperty
-    private String trigger;
+    @JsonProperty("response_url")
+    private String responseUrl;
 
     public String getToken() {
         return token;
@@ -77,12 +77,12 @@ public class Hook {
         this.channelName = channelName;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getCommand() {
+        return command;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public String getUserId() {
@@ -109,12 +109,12 @@ public class Hook {
         this.text = text;
     }
 
-    public String getTrigger() {
-        return trigger;
+    public String getResponseUrl() {
+        return responseUrl;
     }
 
-    public void setTrigger(String trigger) {
-        this.trigger = trigger;
+    public void setResponseUrl(String responseUrl) {
+        this.responseUrl = responseUrl;
     }
 
     @Override
@@ -125,11 +125,11 @@ public class Hook {
                 ", teamDomain='" + teamDomain + '\'' +
                 ", channelId='" + channelId + '\'' +
                 ", channelName='" + channelName + '\'' +
-                ", timestamp='" + timestamp + '\'' +
+                ", command='" + command + '\'' +
                 ", userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", text='" + text + '\'' +
-                ", trigger='" + trigger + '\'' +
+                ", responseUrl='" + responseUrl + '\'' +
                 '}';
     }
 }
