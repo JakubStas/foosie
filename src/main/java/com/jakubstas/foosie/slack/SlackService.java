@@ -36,6 +36,9 @@ public class SlackService {
 
         final URI uri = URI.create(uriAsString);
 
+        logger.info("URI = " + uri.toString());
+        logger.info("Message = " + gameResponse.getText());
+
         restTemplate.postForLocation(uri, gameResponse);
     }
 }

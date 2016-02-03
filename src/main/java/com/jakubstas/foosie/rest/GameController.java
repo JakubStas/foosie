@@ -64,7 +64,11 @@ public class GameController {
         logger.info("userName: " + userName);
 
         if (slackProperties.getIaminCommandToken().equals(token)) {
+            logger.info("User {} decided to join the game.", userName);
+
             final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
+
+            logger.info("Response is ready.");
 
             slackService.quickReply(mostRecentResponseUrl, gameResponse);
         } else {
