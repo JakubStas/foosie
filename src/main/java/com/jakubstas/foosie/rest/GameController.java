@@ -42,19 +42,19 @@ public class GameController {
         logger.info("text: " + text);
         logger.info("responseUrl: " + responseUrl);
 
-        if (slackProperties.getNewCommandToken().equals(token)) {
-            final Matcher matcher = timePattern.matcher(text);
+//        if (slackProperties.getNewCommandToken().equals(token)) {
+        final Matcher matcher = timePattern.matcher(text);
 
-            if (matcher.matches()) {
-                gameService.createGame(userName, text);
+        if (matcher.matches()) {
+            gameService.createGame(userName, text);
 
-                mostRecentResponseUrl = responseUrl;
-            } else {
-                logger.warn("Invalid proposed time!");
-            }
+            mostRecentResponseUrl = responseUrl;
         } else {
-            logger.warn("Invalid New Slack token!");
+            logger.warn("Invalid proposed time!");
         }
+//        } else {
+//            logger.warn("Invalid New Slack token!");
+//        }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "join", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -64,17 +64,17 @@ public class GameController {
         logger.info("expected token: " + slackProperties.getIaminCommandToken());
         logger.info("userName: " + userName);
 
-        if (slackProperties.getIaminCommandToken().equals(token)) {
-            logger.info("User {} decided to join the game.", userName);
+//        if (slackProperties.getIaminCommandToken().equals(token)) {
+        logger.info("User {} decided to join the game.", userName);
 
-            final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
+        final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
 
-            logger.info("Response is ready.");
+        logger.info("Response is ready.");
 
-            slackService.quickReply(mostRecentResponseUrl, gameResponse);
-        } else {
-            logger.warn("Invalid Iamin Slack token!");
-        }
+        slackService.quickReply(mostRecentResponseUrl, gameResponse);
+//        } else {
+//            logger.warn("Invalid Iamin Slack token!");
+//        }
     }
 
 }
