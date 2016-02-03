@@ -7,7 +7,9 @@ public class SlackProperties {
 
     private String incomingWebHookUri;
 
-    private String slashCommandToken;
+    private String iaminCommandToken;
+
+    private String newCommandToken;
 
     public String getIncomingWebHookUri() {
         return incomingWebHookUri;
@@ -17,11 +19,19 @@ public class SlackProperties {
         this.incomingWebHookUri = incomingWebHookUri;
     }
 
-    public String getSlashCommandToken() {
-        return slashCommandToken;
+    public String getIaminCommandToken() {
+        return iaminCommandToken;
     }
 
-    public void setSlashCommandToken(String slashCommandToken) {
-        this.slashCommandToken = slashCommandToken;
+    public void setIaminCommandToken(String iaminCommandToken) {
+        this.iaminCommandToken = iaminCommandToken;
+    }
+
+    public String getNewCommandToken() {
+        return newCommandToken;
+    }
+
+    public void setNewCommandToken(String newCommandToken) {
+        this.newCommandToken = newCommandToken;
     }
 }

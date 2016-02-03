@@ -42,7 +42,7 @@ public class GameController {
         logger.info("text: " + text);
         logger.info("responseUrl: " + responseUrl);
 
-        if (slackProperties.getSlashCommandToken().equals(token)) {
+        if (slackProperties.getNewCommandToken().equals(token)) {
             final Matcher matcher = timePattern.matcher(text);
 
             if (matcher.matches()) {
@@ -63,7 +63,7 @@ public class GameController {
         logger.info("token: " + token);
         logger.info("userName: " + userName);
 
-        if (slackProperties.getSlashCommandToken().equals(token)) {
+        if (slackProperties.getIaminCommandToken().equals(token)) {
             final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
 
             slackService.quickReply(mostRecentResponseUrl, gameResponse);
