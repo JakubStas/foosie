@@ -27,10 +27,10 @@ public class GameController {
     private final Pattern timePattern = Pattern.compile("[0-9]{2}:[0-9]{2}");
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public String createGame(@RequestParam(value = "token", required = false) String token,
-                             @RequestParam(value = "user_name", required = false) String userName,
-                             @RequestParam(value = "text", required = false) String text,
-                             @RequestParam(value = "response_url", required = false) String responseUrl) {
+    public void createGame(@RequestParam(value = "token", required = false) String token,
+                           @RequestParam(value = "user_name", required = false) String userName,
+                           @RequestParam(value = "text", required = false) String text,
+                           @RequestParam(value = "response_url", required = false) String responseUrl) {
         logger.info("token: " + token);
         logger.info("userName: " + userName);
         logger.info("text: " + text);
@@ -47,7 +47,5 @@ public class GameController {
         } else {
             logger.warn("Invalid Slack token!");
         }
-
-        return "Ping complete!";
     }
 }
