@@ -28,7 +28,8 @@ public class GameController {
     @Autowired
     private SlackProperties slackProperties;
 
-    private String mostRecentResponseUrl;
+    @Autowired
+    private PingController pingController;
 
     private final Pattern timePattern = Pattern.compile("[0-9]{2}:[0-9]{2}");
 
@@ -48,7 +49,7 @@ public class GameController {
         if (matcher.matches()) {
             gameService.createGame(userName, text);
 
-            mostRecentResponseUrl = responseUrl;
+            pingController.setMostRecentResponseUrl(responseUrl);
         } else {
             logger.warn("Invalid proposed time!");
         }
@@ -56,25 +57,4 @@ public class GameController {
 //            logger.warn("Invalid New Slack token!");
 //        }
     }
-
-    @RequestMapping(method = RequestMethod.POST, value = "join", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void joinGame(@RequestParam(value = "token", required = false) String token,
-                         @RequestParam(value = "user_name", required = false) String userName) {
-        logger.info("token: " + token);
-        logger.info("expected token: " + slackProperties.getIaminCommandToken());
-        logger.info("userName: " + userName);
-
-//        if (slackProperties.getIaminCommandToken().equals(token)) {
-        logger.info("User {} decided to join the game.", userName);
-
-        final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
-
-        logger.info("Response is ready.");
-
-        slackService.quickReply(mostRecentResponseUrl, gameResponse);
-//        } else {
-//            logger.warn("Invalid Iamin Slack token!");
-//        }
-    }
-
 }
