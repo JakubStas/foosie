@@ -48,6 +48,15 @@ public class GameController {
         }
     }
 
+    @RequestMapping(path = "update", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    public void updateGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
+        if (slackProperties.getUpdateCommandToken().equals(token)) {
+            gameService.updateGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+        } else {
+            logger.warn("Cannot update a game - invalid token!");
+        }
+    }
+
     @RequestMapping(path = "cancel", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void cancelGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "response_url") String responseUrl) {
         if (slackProperties.getCancelCommandToken().equals(token)) {

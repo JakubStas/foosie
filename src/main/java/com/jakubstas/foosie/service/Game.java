@@ -30,4 +30,8 @@ public class Game {
     public Date getScheduledTime() {
         return scheduledTime;
     }
+
+    public void reschedule(final Date newScheduledTime) {
+        this.scheduledTime = newScheduledTime;
+    }
 }
