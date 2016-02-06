@@ -46,8 +46,9 @@ public class GameService {
             final String channelInviteMessage = String.format("%s wants to play a game at %s. Who's in?", userName, sdf.format(proposedTime));
             slackService.postMessageToChannel(channelInviteMessage);
 
-            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + userName);
-            slackService.postPrivateReplyToMessage(newGame.getGameMessageUrl(), userJoinedGameReply);
+            final String hostJoinedGameReplyMessage = String.format("%ss game @%s\n:ballot_box_with_check: ", userName, sdf.format(proposedTime));
+            final PrivateReply hostJoinedGameReply = new PrivateReply(hostJoinedGameReplyMessage);
+            slackService.postPrivateReplyToMessage(newGame.getGameMessageUrl(), hostJoinedGameReply);
 
             logger.info("The channel notified about {}s game invite.", userName);
         } else {
