@@ -95,6 +95,8 @@ public class GameService {
             final String noActiveGameMessage = String.format("There is no active game by %s at the moment. Try creating a new one yourself!", hostName);
             final PrivateReply privateConfirmation = new PrivateReply(noActiveGameMessage);
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
+
+            return;
         }
 
         if (game.getPlayerIds().contains(userName)) {
