@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController("game")
 public class GameController {
@@ -27,7 +25,6 @@ public class GameController {
     @Autowired
     private SlackProperties slackProperties;
 
-    private final Pattern timePattern = Pattern.compile("([01]?[0-9]|2[0-3]):[0-5][0-9]");
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
@@ -36,14 +33,7 @@ public class GameController {
         logger.info("proposedTime: " + proposedTime);
         logger.info("responseUrl: " + responseUrl);
 
-        final Matcher matcher = timePattern.matcher(proposedTime);
-
-        if (matcher.matches()) {
-            gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
-
-        } else {
-            logger.warn("Invalid proposed time!");
-        }
+        gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
     }
 
     private Date getProposedTimeAsDate(final String proposedTime) {
