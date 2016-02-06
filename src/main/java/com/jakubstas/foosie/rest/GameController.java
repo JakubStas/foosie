@@ -40,9 +40,9 @@ public class GameController {
     @RequestMapping(path = "join", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void joinGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @NotBlank String hostName, @RequestParam(value = "response_url") String responseUrl) {
         if (slackProperties.getIaminCommandToken().equals(token)) {
-            final Optional<String> userNameOptional = StringUtils.hasText(userName) ? Optional.of(userName) : Optional.empty();
+            final Optional<String> hostNameOptional = StringUtils.hasText(hostName) ? Optional.of(hostName) : Optional.empty();
 
-            gameService.joinGame(userName, userNameOptional, responseUrl);
+            gameService.joinGame(userName, hostNameOptional, responseUrl);
         } else {
             logger.warn("Cannot join a game - invalid token!");
         }
