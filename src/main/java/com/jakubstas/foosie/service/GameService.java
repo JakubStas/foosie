@@ -46,9 +46,10 @@ public class GameService {
             final String channelInviteMessage = String.format("%s wants to play a game at %s. Who's in?", userName, sdf.format(proposedTime));
             slackService.postMessageToChannel(channelInviteMessage);
 
-            logger.info("The channel notified about {}s game invite.", userName);
+            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + userName);
+            slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
 
-            joinGameByHostName(userName, userName, newGame, messageUrl);
+            logger.info("The channel notified about {}s game invite.", userName);
         } else {
             logger.info("Active game already exists for {}", userName);
 

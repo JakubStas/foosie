@@ -15,6 +15,8 @@ public class Game {
     public Game(final String userId, final String gameMessageUrl, final Date scheduledTime) {
         this.gameMessageUrl = gameMessageUrl;
         this.scheduledTime = scheduledTime;
+
+        playerIds.add(userId);
     }
 
     public String getGameMessageUrl() {
