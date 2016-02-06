@@ -11,6 +11,8 @@ public class SlackProperties {
 
     private String newCommandToken;
 
+    private String updateCommandToken;
+
     private String cancelCommandToken;
 
     public String getIncomingWebHookUri() {
@@ -43,5 +45,13 @@ public class SlackProperties {
 
     public void setCancelCommandToken(String cancelCommandToken) {
         this.cancelCommandToken = cancelCommandToken;
+    }
+
+    public String getUpdateCommandToken() {
+        return updateCommandToken;
+    }
+
+    public void setUpdateCommandToken(String updateCommandToken) {
+        this.updateCommandToken = updateCommandToken;
     }
 }
