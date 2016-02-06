@@ -37,16 +37,18 @@ public class GameService {
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
-            final String gameCreatedMessage = String.format("You game invite has been posted. The game is scheduled for {} and following players joined in:", sdf.format(proposedTime));
+            final String gameCreatedMessage = String.format("You game invite has been posted. The game is scheduled for %s and following players joined in:", sdf.format(proposedTime));
             final PrivateReply gameCreatedReply = new PrivateReply(gameCreatedMessage);
             slackService.postPrivateReplyToMessage(messageUrl, gameCreatedReply);
 
             logger.info("The host {} notified that their game invite has been registered.", userName);
 
-            final String channelInviteMessage = String.format("{} wants to play a game at {}. Who's in?", userName);
+            final String channelInviteMessage = String.format("%s wants to play a game at %s. Who's in?", userName, sdf.format(proposedTime));
             slackService.postMessageToChannel(channelInviteMessage);
 
             logger.info("The channel notified about {}s game invite.", userName);
+
+            joinGameByHostName(userName, userName, newGame, messageUrl);
         } else {
             logger.info("Active game already exists for {}", userName);
 
