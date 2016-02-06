@@ -47,7 +47,7 @@ public class GameService {
             slackService.postMessageToChannel(channelInviteMessage);
 
             final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + userName);
-            slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
+            slackService.postPrivateReplyToMessage(newGame.getGameMessageUrl(), userJoinedGameReply);
 
             logger.info("The channel notified about {}s game invite.", userName);
         } else {
