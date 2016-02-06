@@ -37,11 +37,11 @@ public class GameService {
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
-            final String gameCreatedMessage = String.format("You game invite has been posted. The game is scheduled for %s and following players joined in:", sdf.format(proposedTime));
+            final String gameCreatedMessage = String.format("Your game invite has been posted. The game is scheduled for %s and following players joined in:", sdf.format(proposedTime));
             final PrivateReply gameCreatedReply = new PrivateReply(gameCreatedMessage);
             slackService.postPrivateReplyToMessage(messageUrl, gameCreatedReply);
 
-            logger.info("The host {} notified that their game invite has been registered.", userName);
+            logger.info("The host {} was notified that their game invite has been registered.", userName);
 
             final String channelInviteMessage = String.format("%s wants to play a game at %s. Who's in?", userName, sdf.format(proposedTime));
             slackService.postMessageToChannel(channelInviteMessage);
@@ -50,7 +50,7 @@ public class GameService {
             final PrivateReply hostJoinedGameReply = new PrivateReply(hostJoinedGameReplyMessage);
             slackService.postPrivateReplyToMessage(newGame.getGameMessageUrl(), hostJoinedGameReply);
 
-            logger.info("The channel notified about {}s game invite.", userName);
+            logger.info("The channel was notified about {}s game invite.", userName);
         } else {
             logger.info("Active game already exists for {}", userName);
 
@@ -113,13 +113,39 @@ public class GameService {
             final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + userName);
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
 
-            logger.info("The host notified that {} joined their game.", userName);
+            logger.info("The host was notified that {} joined their game.", userName);
 
             final String privateConfirmationMessage = String.format("You have successfully joined game by %s starting at %s", game.getPlayerIds().get(0), sdf.format(game.getScheduledTime()));
             final PrivateReply privateConfirmation = new PrivateReply(privateConfirmationMessage);
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
-            logger.info("The user notified that they joined {}s game.", hostName);
+            logger.info("The user was notified that they joined {}s game.", hostName);
+        }
+    }
+
+    public void cancelGame(final @NotBlank String userName, final @GameUrl String responseUrl) {
+        final Game game = activeGames.get(userName);
+
+        if (game != null) {
+            logger.info("Cancelling the game by {}", userName);
+
+            activeGames.remove(userName);
+
+            final PrivateReply hostCancelledGameReply = new PrivateReply("Your game has been successfully cancelled!");
+            slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameReply);
+
+            logger.info("The host was notified that {} joined their game.", userName);
+
+            final String hostCancelledGameReplyMessage = String.format("Lobby for %ss game has been closed. The game is cancelled!", userName);
+            final PrivateReply hostCancelledGameChannelReply = new PrivateReply(hostCancelledGameReplyMessage);
+            slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameChannelReply);
+
+            logger.info("The channel was notified that {}s game has been cancelled.", userName);
+        } else {
+            logger.info("There are no active games by {} to cancel", userName);
+
+            final PrivateReply cancelNotAvaliableReply = new PrivateReply("You have no active games to be cancelled.");
+            slackService.postPrivateReplyToMessage(responseUrl, cancelNotAvaliableReply);
         }
     }
 }

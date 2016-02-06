@@ -29,7 +29,7 @@ public class GameController {
     private SlackProperties slackProperties;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
+    public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
         if (slackProperties.getNewCommandToken().equals(token)) {
             gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
         } else {
@@ -45,6 +45,15 @@ public class GameController {
             gameService.joinGame(userName, hostNameOptional, responseUrl);
         } else {
             logger.warn("Cannot join a game - invalid token!");
+        }
+    }
+
+    @RequestMapping(path = "cancel", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    public void cancelGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "response_url") String responseUrl) {
+        if (slackProperties.getCancelCommandToken().equals(token)) {
+            gameService.cancelGame(userName, responseUrl);
+        } else {
+            logger.warn("Cannot cancel a game - invalid token!");
         }
     }
 
