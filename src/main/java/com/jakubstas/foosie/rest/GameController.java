@@ -53,7 +53,7 @@ public class GameController {
         if (slackProperties.getUpdateCommandToken().equals(token)) {
             gameService.updateGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
         } else {
-            logger.warn("Cannot cancel a game - invalid token!");
+            logger.warn("Cannot update a game - invalid token!");
         }
     }
 
