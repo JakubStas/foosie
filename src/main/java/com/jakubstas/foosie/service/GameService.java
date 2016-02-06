@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -23,7 +24,7 @@ public class GameService {
     @Autowired
     private SlackService slackService;
 
-    private ConcurrentHashMap<String, Game> activeGames = new ConcurrentHashMap<>();
+    private Map<String, Game> activeGames = new ConcurrentHashMap<>();
 
     public void createGame(final @NotBlank String userId, final @GameUrl String messageUrl, final @TodayButFuture Date proposedTime) {
         final Game game = activeGames.get(userId);
@@ -33,7 +34,7 @@ public class GameService {
 
             final Game newGame = new Game(userId, messageUrl, proposedTime);
 
-            activeGames.put(userId, game);
+            activeGames.put(userId, newGame);
 
             replyWithGameCreated(userId, newGame);
         } else {
