@@ -3,9 +3,11 @@ package com.jakubstas.foosie.rest;
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
+import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 @RestController("game")
 public class GameController {
@@ -25,15 +28,24 @@ public class GameController {
     @Autowired
     private SlackProperties slackProperties;
 
-
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
-        logger.info("token: " + token);
-        logger.info("userName: " + userName);
-        logger.info("proposedTime: " + proposedTime);
-        logger.info("responseUrl: " + responseUrl);
+        if (slackProperties.getNewCommandToken().equals(token)) {
+            gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+        } else {
+            logger.warn("Cannot create a new game - invalid token!");
+        }
+    }
 
-        gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+    @RequestMapping(path = "join", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    public void joinGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @NotBlank String hostName, @RequestParam(value = "response_url") String responseUrl) {
+        if (slackProperties.getIaminCommandToken().equals(token)) {
+            final Optional<String> userNameOptional = StringUtils.hasText(userName) ? Optional.of(userName) : Optional.empty();
+
+            gameService.joinGame(userName, userNameOptional, responseUrl);
+        } else {
+            logger.warn("Cannot join a game - invalid token!");
+        }
     }
 
     private Date getProposedTimeAsDate(final String proposedTime) {
@@ -47,25 +59,4 @@ public class GameController {
 
         return cal.getTime();
     }
-
-    @RequestMapping(path = "join", method = RequestMethod.POST, value = "join", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void joinGame(@RequestParam(value = "token", required = false) String token,
-                         @RequestParam(value = "user_name", required = false) String userName) {
-        logger.info("token: " + token);
-        logger.info("expected token: " + slackProperties.getIaminCommandToken());
-        logger.info("userName: " + userName);
-
-//        if (slackProperties.getIaminCommandToken().equals(token)) {
-//        logger.info("User {} decided to join the game.", userName);
-//
-//        final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
-//
-//        logger.info("Response is ready.");
-//
-//        slackService.quickReply(mostRecentResponseUrl, gameResponse);
-//        } else {
-//            logger.warn("Invalid Iamin Slack token!");
-//        }
-    }
-
 }

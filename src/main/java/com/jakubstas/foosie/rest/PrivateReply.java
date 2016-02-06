@@ -2,7 +2,7 @@ package com.jakubstas.foosie.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GameResponse {
+public class PrivateReply {
 
     @JsonProperty
     private String text;
@@ -10,7 +10,7 @@ public class GameResponse {
     @JsonProperty
     private Attachment[] attachments = new Attachment[1];
 
-    public GameResponse(String text) {
+    public PrivateReply(String text) {
         this.text = text;
         attachments[0] = new Attachment();
     }

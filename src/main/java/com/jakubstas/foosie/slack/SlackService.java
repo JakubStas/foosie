@@ -1,7 +1,7 @@
 package com.jakubstas.foosie.slack;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
-import com.jakubstas.foosie.rest.GameResponse;
+import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.slack.model.SlackMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class SlackService {
     @Autowired
     private SlackProperties slackProperties;
 
-    public void postMessage(final String message) {
+    public void postMessageToChannel(final String message) {
         logger.info("Posting message: {}", message);
 
         final URI uri = URI.create(slackProperties.getIncomingWebHookUri());
@@ -31,14 +31,14 @@ public class SlackService {
         restTemplate.postForLocation(uri, slackMessage);
     }
 
-    public void quickReply(final String uriAsString, final GameResponse gameResponse) {
+    public void postPrivateReplyToMessage(final String uriAsString, final PrivateReply privateReply) {
         logger.info("Posting quick reply to: {}", uriAsString);
 
         final URI uri = URI.create(uriAsString);
 
         logger.info("URI = " + uri.toString());
-        logger.info("Message = " + gameResponse.getText());
+        logger.info("Message = " + privateReply.getText());
 
-        restTemplate.postForLocation(uri, gameResponse);
+        restTemplate.postForLocation(uri, privateReply);
     }
 }
