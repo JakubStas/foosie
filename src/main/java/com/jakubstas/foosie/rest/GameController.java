@@ -2,7 +2,7 @@ package com.jakubstas.foosie.rest;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
-import com.jakubstas.foosie.slack.SlackService;
+import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,38 +25,37 @@ public class GameController {
     private GameService gameService;
 
     @Autowired
-    private SlackService slackService;
-
-    @Autowired
     private SlackProperties slackProperties;
 
-    private String mostRecentResponseUrl;
-
-    private final Pattern timePattern = Pattern.compile("[0-9]{2}:[0-9]{2}");
+    private final Pattern timePattern = Pattern.compile("([01]?[0-9]|2[0-3]):[0-5][0-9]");
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void createGame(@RequestParam(value = "token", required = false) String token,
-                           @RequestParam(value = "user_name", required = false) String userName,
-                           @RequestParam(value = "text", required = false) String text,
-                           @RequestParam(value = "response_url", required = false) String responseUrl) {
+    public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
         logger.info("token: " + token);
         logger.info("userName: " + userName);
-        logger.info("text: " + text);
+        logger.info("proposedTime: " + proposedTime);
         logger.info("responseUrl: " + responseUrl);
 
-//        if (slackProperties.getNewCommandToken().equals(token)) {
-        final Matcher matcher = timePattern.matcher(text);
+        final Matcher matcher = timePattern.matcher(proposedTime);
 
         if (matcher.matches()) {
-            gameService.createGame(userName, text);
+            gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
 
-            mostRecentResponseUrl = responseUrl;
         } else {
             logger.warn("Invalid proposed time!");
         }
-//        } else {
-//            logger.warn("Invalid New Slack token!");
-//        }
+    }
+
+    private Date getProposedTimeAsDate(final String proposedTime) {
+        final String hours = proposedTime.split(":")[0];
+        final String minutes = proposedTime.split(":")[1];
+
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hours));
+        cal.set(Calendar.MINUTE, Integer.parseInt(minutes));
+        cal.set(Calendar.SECOND, 0);
+
+        return cal.getTime();
     }
 
     @RequestMapping(path = "join", method = RequestMethod.POST, value = "join", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -65,13 +66,13 @@ public class GameController {
         logger.info("userName: " + userName);
 
 //        if (slackProperties.getIaminCommandToken().equals(token)) {
-            logger.info("User {} decided to join the game.", userName);
-
-            final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
-
-            logger.info("Response is ready.");
-
-            slackService.quickReply(mostRecentResponseUrl, gameResponse);
+//        logger.info("User {} decided to join the game.", userName);
+//
+//        final GameResponse gameResponse = new GameResponse(":ballot_box_with_check: " + userName);
+//
+//        logger.info("Response is ready.");
+//
+//        slackService.quickReply(mostRecentResponseUrl, gameResponse);
 //        } else {
 //            logger.warn("Invalid Iamin Slack token!");
 //        }
