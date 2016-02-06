@@ -15,7 +15,7 @@ public class PingController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String ping(@RequestParam(value = "msg", defaultValue = "Hello world!") String message) {
-        slackService.postMessage(message);
+        slackService.postMessageToChannel(message);
 
         return "Ping complete!";
     }
