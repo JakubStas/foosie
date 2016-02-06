@@ -137,8 +137,7 @@ public class GameService {
             logger.info("The host was notified that {} joined their game.", userName);
 
             final String hostCancelledGameReplyMessage = String.format("Lobby for %ss game has been closed. The game is cancelled!", userName);
-            final PrivateReply hostCancelledGameChannelReply = new PrivateReply(hostCancelledGameReplyMessage);
-            slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameChannelReply);
+            slackService.postMessageToChannel(hostCancelledGameReplyMessage);
 
             logger.info("The channel was notified that {}s game has been cancelled.", userName);
         } else {
