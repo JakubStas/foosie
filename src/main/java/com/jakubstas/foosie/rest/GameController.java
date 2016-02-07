@@ -66,7 +66,7 @@ public class GameController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.GET)
     public void getStatus(@RequestParam(value = "token") String token, @RequestParam(value = "response_url") String responseUrl) {
         if (slackProperties.getStatusCommandToken().equals(token)) {
             gameService.getStatus(responseUrl);
