@@ -1,6 +1,7 @@
 package com.jakubstas.foosie.service;
 
 import com.jakubstas.foosie.rest.PrivateReply;
+import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.GameUrl;
 import com.jakubstas.foosie.validation.TodayButFuture;
@@ -148,7 +149,7 @@ public class GameService {
         }
     }
 
-    public void updateGame(String userName, String responseUrl, Date proposedTimeAsDate) {
+    public void updateGame(final @NotBlank String userName, final @GameUrl String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
@@ -172,5 +173,30 @@ public class GameService {
             final PrivateReply cancelNotAvaliableReply = new PrivateReply("You have no active games to be rescheduled.");
             slackService.postPrivateReplyToMessage(responseUrl, cancelNotAvaliableReply);
         }
+    }
+
+    public void getStatus(final @GameUrl String responseUrl) {
+        final String statusReplyMessge;
+        if (activeGames.size() == 0) {
+            statusReplyMessge = "There are no active games right now.";
+        } else {
+            int i = 1;
+            final StringBuffer stringBuffer = new StringBuffer();
+
+            stringBuffer.append("Active games:\n\n");
+
+            for (final String hostName : activeGames.keySet()) {
+                final String gameStatus = String.format("%d. hosted by %s (% player(s))", i, hostName, activeGames.get(hostName).getPlayerIds().size());
+                stringBuffer.append(gameStatus);
+                i++;
+            }
+
+            statusReplyMessge = stringBuffer.toString();
+        }
+
+        final PrivateReply statusReply = new PrivateReply(statusReplyMessge);
+        slackService.postPrivateReplyToMessage(responseUrl, statusReply);
+
+        logger.info("The user was presented with current status.");
     }
 }
