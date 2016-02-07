@@ -66,6 +66,15 @@ public class GameController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    public void getStatus(@RequestParam(value = "token") String token, @RequestParam(value = "response_url") String responseUrl) {
+        if (slackProperties.getStatusCommandToken().equals(token)) {
+            gameService.getStatus(responseUrl);
+        } else {
+            logger.warn("Cannot show status - invalid token!");
+        }
+    }
+
     private Date getProposedTimeAsDate(final String proposedTime) {
         final String hours = proposedTime.split(":")[0];
         final String minutes = proposedTime.split(":")[1];
