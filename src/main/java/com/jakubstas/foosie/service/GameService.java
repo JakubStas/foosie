@@ -1,6 +1,7 @@
 package com.jakubstas.foosie.service;
 
 import com.jakubstas.foosie.rest.PrivateReply;
+import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.GameUrl;
 import com.jakubstas.foosie.validation.TodayButFuture;
@@ -177,7 +178,7 @@ public class GameService {
     public void getStatus(final @GameUrl String responseUrl) {
         final String statusReplyMessge;
         if (activeGames.size() == 0) {
-            statusReplyMessge = "";
+            statusReplyMessge = "There are no active games right now.";
         } else {
             int i = 1;
             final StringBuffer stringBuffer = new StringBuffer();

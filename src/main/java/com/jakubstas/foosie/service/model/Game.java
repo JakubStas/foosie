@@ -1,4 +1,4 @@
-package com.jakubstas.foosie.service;
+package com.jakubstas.foosie.service.model;
 
 import java.util.ArrayList;
 import java.util.Date;
