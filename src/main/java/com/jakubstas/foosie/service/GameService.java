@@ -186,7 +186,7 @@ public class GameService {
             stringBuffer.append("Active games:\n\n");
 
             for (final String hostName : activeGames.keySet()) {
-                final String gameStatus = String.format("%d. hosted by %s (% player(s))", i, hostName, activeGames.get(hostName).getPlayerIds().size());
+                final String gameStatus = String.format("%d. hosted by %s (%d player(s))", i, hostName, activeGames.get(hostName).getPlayerIds().size());
                 stringBuffer.append(gameStatus);
                 i++;
             }
