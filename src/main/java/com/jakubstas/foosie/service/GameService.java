@@ -187,7 +187,7 @@ public class GameService {
 
             for (final String hostName : activeGames.keySet()) {
                 final Game game = activeGames.get(hostName);
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))", i, hostName, sdf.format(game.getScheduledTime()), game.getPlayerIds().size());
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, hostName, sdf.format(game.getScheduledTime()), game.getPlayerIds().size());
                 stringBuffer.append(gameStatus);
                 i++;
             }
