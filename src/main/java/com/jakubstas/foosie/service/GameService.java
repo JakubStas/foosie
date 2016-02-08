@@ -73,7 +73,7 @@ public class GameService {
             if (activeGames.size() == 1) {
                 // join the only active game
                 final String hostName = activeGames.keySet().iterator().next();
-                final Game game = activeGames.get(0);
+                final Game game = activeGames.get(hostName);
 
                 logger.info("Joining the only active game by {}", hostName);
 
