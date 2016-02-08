@@ -34,17 +34,17 @@ public class GameSetupIntegrationTest {
         // given
         final String userName = "jakub";
         final String proposedTime = "12:00";
-        final String responseUrl = "localhost:" + slackPort;
+        final String responseUrl = "http://localhost:" + slackPort;
 
-        mockServerClient.when(request().withMethod("POST")).respond(response().withStatusCode(200));
+        mockServerClient.when(request().withMethod("POST").withPath("/")).respond(response().withStatusCode(200));
 
-        slashCommandUtils.slashGamesCommand(userName, responseUrl);
+//        slashCommandUtils.slashGamesCommand(userName, responseUrl);
 
         // when
         slashCommandUtils.slashNewCommand(userName, proposedTime, responseUrl);
 
         // then
 
-        mockServerClient.verify(request().withMethod("POST"), VerificationTimes.exactly(1));
+        mockServerClient.verify(request().withMethod("POST").withPath("/"), VerificationTimes.exactly(1));
     }
 }
