@@ -1,4 +1,4 @@
-package com.jakubstas;
+package com.jakubstas.integration;
 
 import com.jakubstas.foosie.FoosieApplication;
 import org.junit.Test;
