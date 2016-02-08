@@ -10,5 +10,9 @@ public final class SlackMessageBodies {
 
     public final static String gameInviteAtTwelvePostedChannelMessageBody = "{\"text\":\"jakub wants to play a game at 12:00. Who's in?\"}";
 
+    public final static String gameLobbyHasBeenCreatedPrivateMessageBody = "{\"text\":\"Lobby for jakubs game starting at 12:00\\n:ballot_box_with_check: jakub\",\"attachments\":[{\"text\":null}]}";
 
+    public final static String newPlayerJoinedGameNotificationPrivateMessageBody = "{\"text\":\":ballot_box_with_check: karol\",\"attachments\":[{\"text\":null}]}";
+
+    public final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by jakub starting at 12:00\",\"attachments\":[{\"text\":null}]}";
 }
