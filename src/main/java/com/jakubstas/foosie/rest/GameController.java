@@ -2,6 +2,7 @@ package com.jakubstas.foosie.rest;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
+import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -26,14 +29,35 @@ public class GameController {
     private GameService gameService;
 
     @Autowired
+    private SlackService slackService;
+
+    @Autowired
     private SlackProperties slackProperties;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
-        if (slackProperties.getNewCommandToken().equals(token)) {
-            gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
-        } else {
-            logger.warn("Cannot create a new game - invalid token!");
+        try {
+            if (slackProperties.getNewCommandToken().equals(token)) {
+                gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+            } else {
+                logger.warn("Cannot create a new game - invalid token!");
+            }
+        } catch (ConstraintViolationException e) {
+            final StringBuffer stringBuffer = new StringBuffer();
+            int i = 1;
+
+            stringBuffer.append("Your command fail validation! Please review following issues:\n\n");
+
+            for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+                final String violationMessage = String.format("%d. %s\n", i, violation.getMessage());
+                stringBuffer.append(violationMessage);
+                i++;
+            }
+
+            final PrivateReply statusReply = new PrivateReply(stringBuffer.toString());
+            slackService.postPrivateReplyToMessage(responseUrl, statusReply);
+
+            logger.info("The list of validation errors was returned to the user.");
         }
     }
 

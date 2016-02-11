@@ -31,7 +31,7 @@ public class GameService {
 
     private Map<String, Game> activeGames = new ConcurrentHashMap<>();
 
-    public void createGame(final @NotBlank String userName, final @GameUrl String messageUrl, final @TodayButFuture Date proposedTime) {
+    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @GameUrl String messageUrl, final @TodayButFuture Date proposedTime) {
         final Game game = activeGames.get(userName);
 
         if (game == null) {
@@ -62,7 +62,7 @@ public class GameService {
         }
     }
 
-    public void joinGame(final @NotBlank String userName, final Optional<String> hostNameOptional, final @GameUrl String messageUrl) {
+    public void joinGame(final @NotBlank(message = "Username cannot be empty!") String userName, final Optional<String> hostNameOptional, final @GameUrl String messageUrl) {
         if (hostNameOptional.isPresent()) {
             // join the game by host name
             final String hostName = hostNameOptional.get();
@@ -92,7 +92,7 @@ public class GameService {
         }
     }
 
-    private void joinGameByHostName(final @NotBlank String userName, final String hostName, final Game game, final @GameUrl String messageUrl) {
+    private void joinGameByHostName(final @NotBlank(message = "Username cannot be empty!") String userName, final String hostName, final Game game, final @GameUrl String messageUrl) {
         if (game == null) {
             logger.info("No active game by {} found!", hostName);
 
@@ -126,7 +126,7 @@ public class GameService {
         }
     }
 
-    public void cancelGame(final @NotBlank String userName, final @GameUrl String responseUrl) {
+    public void cancelGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @GameUrl String responseUrl) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
@@ -151,7 +151,7 @@ public class GameService {
         }
     }
 
-    public void updateGame(final @NotBlank String userName, final @GameUrl String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
+    public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @GameUrl String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
@@ -178,9 +178,9 @@ public class GameService {
     }
 
     public void getStatus(final @GameUrl String responseUrl) {
-        final String statusReplyMessge;
+        final String statusReplyMessage;
         if (activeGames.size() == 0) {
-            statusReplyMessge = "There are no active games right now.";
+            statusReplyMessage = "There are no active games right now.";
         } else {
             int i = 1;
             final StringBuffer stringBuffer = new StringBuffer();
@@ -194,10 +194,10 @@ public class GameService {
                 i++;
             }
 
-            statusReplyMessge = stringBuffer.toString();
+            statusReplyMessage = stringBuffer.toString();
         }
 
-        final PrivateReply statusReply = new PrivateReply(statusReplyMessge);
+        final PrivateReply statusReply = new PrivateReply(statusReplyMessage);
         slackService.postPrivateReplyToMessage(responseUrl, statusReply);
 
         logger.info("The user was presented with current status.");
