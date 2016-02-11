@@ -23,6 +23,7 @@
         <java.version>1.8</java.version>
         <guava.version>19.0</guava.version>
         <validator.version>5.2.3.Final</validator.version>
+        <commons-validator.version>1.5.0</commons-validator.version>
         <mock-server.version>3.10.2</mock-server.version>
     </properties>
 
@@ -70,6 +71,13 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${validator.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>${commons-validator.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
