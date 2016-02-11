@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = GameUrlValidator.class)
+@Constraint(validatedBy = TodayButFutureValidator.class)
 @Documented
 public @interface TodayButFuture {
 

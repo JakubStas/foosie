@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface GameUrl {
 
-    String message() default "";
+    String message() default "Game URL must be a valid https URL!";
 
     Class<?>[] groups() default {};
 
