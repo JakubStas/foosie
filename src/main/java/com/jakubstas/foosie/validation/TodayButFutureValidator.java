@@ -12,7 +12,6 @@ public class TodayButFutureValidator implements ConstraintValidator<TodayButFutu
 
     private final ZoneId zoneId = ZoneId.of("Europe/Dublin");
 
-
     @Override
     public void initialize(TodayButFuture todayButFuture) {
 

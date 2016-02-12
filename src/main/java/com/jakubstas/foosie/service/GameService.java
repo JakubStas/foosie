@@ -2,6 +2,7 @@ package com.jakubstas.foosie.service;
 
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.service.model.Game;
+import com.jakubstas.foosie.service.model.GamesCache;
 import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
@@ -14,9 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Validated
@@ -29,16 +28,17 @@ public class GameService {
     @Autowired
     private SlackService slackService;
 
-    private Map<String, Game> activeGames = new ConcurrentHashMap<>();
+    @Autowired
+    private GamesCache gamesCache;
 
     public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
-        final Game game = activeGames.get(userName);
+        final Game game = gamesCache.findByHostName(userName);
 
         if (game == null) {
             final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
 
             final Game newGame = new Game(userName, messageUrl, proposedTime);
-            activeGames.put(userName, newGame);
+            gamesCache.addGame(userName, newGame);
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
@@ -68,23 +68,23 @@ public class GameService {
         if (hostNameOptional.isPresent()) {
             // join the game by host name
             final String hostName = hostNameOptional.get();
-            final Game game = activeGames.get(hostName);
+            final Game game = gamesCache.findByHostName(hostName);
 
             logger.info("Trying to join a game by {}", hostName);
 
             joinGameByHostName(userName, hostName, game, messageUrl);
         } else {
-            if (activeGames.size() == 1) {
+            if (gamesCache.getNumberOfActiveGames() == 1) {
                 // join the only active game
-                final String hostName = activeGames.keySet().iterator().next();
-                final Game game = activeGames.get(hostName);
+                final String hostName = gamesCache.getSetOfHostNames().iterator().next();
+                final Game game = gamesCache.findByHostName(hostName);
 
                 logger.info("Joining the only active game by {}", hostName);
 
                 joinGameByHostName(userName, hostName, game, messageUrl);
             } else {
                 // provide the host name
-                final String activeHosts = activeGames.keySet().toString();
+                final String activeHosts = gamesCache.getSetOfHostNames().toString();
 
                 logger.info("Several active games at the moment. Presenting {} with following options: {}", userName, activeHosts);
 
@@ -129,12 +129,12 @@ public class GameService {
     }
 
     public void cancelGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl) {
-        final Game game = activeGames.get(userName);
+        final Game game = gamesCache.findByHostName(userName);
 
         if (game != null) {
             logger.info("Cancelling the game by {}", userName);
 
-            activeGames.remove(userName);
+            gamesCache.cancelGameByHost(userName);
 
             final PrivateReply hostCancelledGameReply = new PrivateReply("Your game has been successfully cancelled!");
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameReply);
@@ -154,7 +154,7 @@ public class GameService {
     }
 
     public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
-        final Game game = activeGames.get(userName);
+        final Game game = gamesCache.findByHostName(userName);
 
         if (game != null) {
             final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
@@ -183,7 +183,7 @@ public class GameService {
 
     public void getStatus(final @NotBlank(message = "Response URL cannot be empty!") String responseUrl) {
         final String statusReplyMessage;
-        if (activeGames.size() == 0) {
+        if (gamesCache.getNumberOfActiveGames() == 0) {
             statusReplyMessage = "There are no active games right now.";
         } else {
             int i = 1;
@@ -191,8 +191,8 @@ public class GameService {
 
             stringBuffer.append("Active games:\n\n");
 
-            for (final String hostName : activeGames.keySet()) {
-                final Game game = activeGames.get(hostName);
+            for (final String hostName : gamesCache.getSetOfHostNames()) {
+                final Game game = gamesCache.findByHostName(hostName);
                 final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, hostName, sdf.format(game.getScheduledTime()), game.getPlayerIds().size());
                 stringBuffer.append(gameStatus);
                 i++;

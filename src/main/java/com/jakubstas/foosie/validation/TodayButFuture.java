@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface TodayButFuture {
 
-    String message() default "Provided date must be in the future but still today!";
+    String message() default "Provided time must be in the future but still today!";
 
     Class<?>[] groups() default {};
 
