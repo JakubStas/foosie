@@ -2,9 +2,6 @@ package com.jakubstas.foosie.rest;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
-import com.jakubstas.foosie.slack.SlackService;
-import com.jakubstas.foosie.validation.TwentyFourHourFormat;
-import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Optional;
 
 @RestController("game")
@@ -30,16 +25,16 @@ public class GameController {
     private SlackProperties slackProperties;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime) {
+    public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") String proposedTime) {
         if (slackProperties.getNewCommandToken().equals(token)) {
-            gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+            gameService.createGame(userName, responseUrl, proposedTime);
         } else {
             logger.warn("Cannot create a new game - invalid token!");
         }
     }
 
     @RequestMapping(path = "join", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void joinGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @NotBlank String hostName) {
+    public void joinGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) String hostName) {
         if (slackProperties.getIaminCommandToken().equals(token)) {
             final Optional<String> hostNameOptional = StringUtils.hasText(hostName) ? Optional.of(hostName) : Optional.empty();
 
@@ -50,9 +45,9 @@ public class GameController {
     }
 
     @RequestMapping(path = "update", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void updateGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime) {
+    public void updateGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") String proposedTime) {
         if (slackProperties.getUpdateCommandToken().equals(token)) {
-            gameService.updateGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
+            gameService.updateGame(userName, responseUrl, proposedTime);
         } else {
             logger.warn("Cannot update a game - invalid token!");
         }
@@ -74,17 +69,5 @@ public class GameController {
         } else {
             logger.warn("Cannot show status - invalid token!");
         }
-    }
-
-    private Date getProposedTimeAsDate(final String proposedTime) {
-        final String hours = proposedTime.split(":")[0];
-        final String minutes = proposedTime.split(":")[1];
-
-        final Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hours));
-        cal.set(Calendar.MINUTE, Integer.parseInt(minutes));
-        cal.set(Calendar.SECOND, 0);
-
-        return cal.getTime();
     }
 }

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * Validation annotation for date that is in the future relative to current time yet in the same day.
  */
-@Target({ElementType.PARAMETER})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = TodayButFutureValidator.class)
 @Documented
