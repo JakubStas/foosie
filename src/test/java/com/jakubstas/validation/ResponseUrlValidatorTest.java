@@ -12,7 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GameUrlValidatorTest {
+public class ResponseUrlValidatorTest {
 
     private final GameUrlValidator validator = new GameUrlValidator();
 

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = GameUrlValidator.class)
 @Documented
-public @interface GameUrl {
+public @interface ResponseUrl {
 
     String message() default "Game URL must be a valid https URL!";
 
