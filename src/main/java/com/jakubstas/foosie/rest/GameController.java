@@ -2,8 +2,6 @@ package com.jakubstas.foosie.rest;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
-import com.jakubstas.foosie.slack.rtm.SlackAuthen;
-import com.jakubstas.foosie.slack.rtm.json.SlackInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +23,6 @@ public class GameController {
 
     @Autowired
     private SlackProperties slackProperties;
-
-    @RequestMapping(method = RequestMethod.GET, path = "rtm")
-    public void rtm() {
-        final SlackAuthen slackAuthen = new SlackAuthen();
-
-        final SlackInfo slackInfo = slackAuthen.tokenAuthen("");
-
-        slackAuthen.toString();
-    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "user_id") String userId, @RequestParam(value = "text") String proposedTime) {
