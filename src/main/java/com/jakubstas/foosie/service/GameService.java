@@ -3,7 +3,6 @@ package com.jakubstas.foosie.service;
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.slack.SlackService;
-import com.jakubstas.foosie.validation.ResponseUrl;
 import com.jakubstas.foosie.validation.TodayButFuture;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ public class GameService {
 
     private Map<String, Game> activeGames = new ConcurrentHashMap<>();
 
-    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @ResponseUrl String messageUrl, final @TodayButFuture Date proposedTime) {
+    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TodayButFuture Date proposedTime) {
         final Game game = activeGames.get(userName);
 
         if (game == null) {
@@ -62,7 +61,7 @@ public class GameService {
         }
     }
 
-    public void joinGame(final @NotBlank(message = "Username cannot be empty!") String userName, final Optional<String> hostNameOptional, final @ResponseUrl String messageUrl) {
+    public void joinGame(final @NotBlank(message = "Username cannot be empty!") String userName, final Optional<String> hostNameOptional, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
         if (hostNameOptional.isPresent()) {
             // join the game by host name
             final String hostName = hostNameOptional.get();
@@ -92,7 +91,7 @@ public class GameService {
         }
     }
 
-    private void joinGameByHostName(final @NotBlank(message = "Username cannot be empty!") String userName, final String hostName, final Game game, final @ResponseUrl String messageUrl) {
+    private void joinGameByHostName(final @NotBlank(message = "Username cannot be empty!") String userName, final String hostName, final Game game, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
         if (game == null) {
             logger.info("No active game by {} found!", hostName);
 
@@ -126,7 +125,7 @@ public class GameService {
         }
     }
 
-    public void cancelGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @ResponseUrl String responseUrl) {
+    public void cancelGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
@@ -151,7 +150,7 @@ public class GameService {
         }
     }
 
-    public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @ResponseUrl String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
+    public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
@@ -177,7 +176,7 @@ public class GameService {
         }
     }
 
-    public void getStatus(final @ResponseUrl String responseUrl) {
+    public void getStatus(final @NotBlank(message = "Response URL cannot be empty!") String responseUrl) {
         final String statusReplyMessage;
         if (activeGames.size() == 0) {
             statusReplyMessage = "There are no active games right now.";

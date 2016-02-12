@@ -9,6 +9,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Validator;
+
 @Configuration
 @EnableAutoConfiguration
 @EnableAspectJAutoProxy
@@ -21,7 +23,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public javax.validation.Validator localValidatorFactoryBean() {
+    public Validator localValidatorFactoryBean() {
         return new LocalValidatorFactoryBean();
     }
 
