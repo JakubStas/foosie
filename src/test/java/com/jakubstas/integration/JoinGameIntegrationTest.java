@@ -1,9 +1,7 @@
 package com.jakubstas.integration;
 
-import com.jakubstas.foosie.service.GameService;
 import com.jakubstas.integration.util.SlackMessageBodies;
 import com.jakubstas.integration.util.SlashCommandUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.model.HttpRequest;

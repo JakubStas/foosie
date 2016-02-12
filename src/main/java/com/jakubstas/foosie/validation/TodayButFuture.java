@@ -4,13 +4,16 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+/**
+ * Validation annotation for date that is in the future relative to current time yet in the same day.
+ */
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = GameUrlValidator.class)
+@Constraint(validatedBy = TodayButFutureValidator.class)
 @Documented
 public @interface TodayButFuture {
 
-    String message() default "";
+    String message() default "Provided date must be in the future but still today!";
 
     Class<?>[] groups() default {};
 

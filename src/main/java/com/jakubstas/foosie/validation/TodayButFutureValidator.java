@@ -35,14 +35,14 @@ public class TodayButFutureValidator implements ConstraintValidator<TodayButFutu
     }
 
     private Date getTodayMidnight() {
-        return getDateInstance(getTodayMidnightInternal());
+        return getDateInstance(getYesterdayMidnightInternal().plusDays(1));
     }
 
     private Date getYesterdayMidnight() {
-        return getDateInstance(getTodayMidnightInternal().minusDays(1));
+        return getDateInstance(getYesterdayMidnightInternal());
     }
 
-    private LocalDateTime getTodayMidnightInternal() {
+    private LocalDateTime getYesterdayMidnightInternal() {
         final LocalTime midnight = LocalTime.MIDNIGHT;
         final LocalDate today = LocalDate.now(zoneId);
 

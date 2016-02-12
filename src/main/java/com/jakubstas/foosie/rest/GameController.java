@@ -2,6 +2,7 @@ package com.jakubstas.foosie.rest;
 
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.service.GameService;
+import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class GameController {
     private SlackProperties slackProperties;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void createGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
+    public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime) {
         if (slackProperties.getNewCommandToken().equals(token)) {
             gameService.createGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
         } else {
@@ -38,7 +39,7 @@ public class GameController {
     }
 
     @RequestMapping(path = "join", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void joinGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @NotBlank String hostName, @RequestParam(value = "response_url") String responseUrl) {
+    public void joinGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) @NotBlank String hostName) {
         if (slackProperties.getIaminCommandToken().equals(token)) {
             final Optional<String> hostNameOptional = StringUtils.hasText(hostName) ? Optional.of(hostName) : Optional.empty();
 
@@ -49,7 +50,7 @@ public class GameController {
     }
 
     @RequestMapping(path = "update", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void updateGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime, @RequestParam(value = "response_url") String responseUrl) {
+    public void updateGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") @TwentyFourHourFormat String proposedTime) {
         if (slackProperties.getUpdateCommandToken().equals(token)) {
             gameService.updateGame(userName, responseUrl, getProposedTimeAsDate(proposedTime));
         } else {
@@ -58,7 +59,7 @@ public class GameController {
     }
 
     @RequestMapping(path = "cancel", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void cancelGame(@RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "response_url") String responseUrl) {
+    public void cancelGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName) {
         if (slackProperties.getCancelCommandToken().equals(token)) {
             gameService.cancelGame(userName, responseUrl);
         } else {
@@ -67,7 +68,7 @@ public class GameController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public void getStatus(@RequestParam(value = "token") String token, @RequestParam(value = "response_url") String responseUrl) {
+    public void getStatus(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token) {
         if (slackProperties.getStatusCommandToken().equals(token)) {
             gameService.getStatus(responseUrl);
         } else {
