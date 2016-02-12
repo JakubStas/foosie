@@ -2,7 +2,8 @@ package com.jakubstas.foosie.aspect;
 
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.slack.SlackService;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,14 @@ public class ValidationProcessingAspect {
     @Autowired
     private SlackService slackService;
 
-    @AfterThrowing(pointcut = "com.jakubstas.foosie.aspect.Pointcuts.inPublicMethodOfGameController(responseUrl)", throwing = "exc")
-    public void sendAllValidationIssuesToUserInAPrivateMessage(final String responseUrl, final ConstraintViolationException exc) {
+    @Around("com.jakubstas.foosie.aspect.Pointcuts.inPublicMethodOfGameController(responseUrl)")
+    public void sendAllValidationIssuesToUserInAPrivateMessage(final ProceedingJoinPoint pjp, final String responseUrl) {
         try {
+            pjp.proceed();
+        } catch (ConstraintViolationException exception) {
             logger.debug("GameService has just thrown ConstraintViolationException!");
 
-            final String message = getMessageForUserFromConstraintViolationException(exc);
+            final String message = getMessageForUserFromConstraintViolationException(exception);
 
             logger.debug("Message for the user has been built");
 
@@ -34,8 +37,8 @@ public class ValidationProcessingAspect {
             slackService.postPrivateReplyToMessage(responseUrl, statusReply);
 
             logger.info("The list of validation errors was returned to the user.");
-        } catch (Throwable t) {
-            logger.error(t.getMessage());
+        } catch (Throwable throwable) {
+            logger.error(throwable.getMessage());
         }
     }
 

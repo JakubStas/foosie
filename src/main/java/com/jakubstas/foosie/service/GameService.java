@@ -3,7 +3,7 @@ package com.jakubstas.foosie.service;
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.slack.SlackService;
-import com.jakubstas.foosie.validation.TodayButFuture;
+import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -30,10 +31,12 @@ public class GameService {
 
     private Map<String, Game> activeGames = new ConcurrentHashMap<>();
 
-    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TodayButFuture Date proposedTime) {
+    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
         final Game game = activeGames.get(userName);
 
         if (game == null) {
+            final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
+
             final Game newGame = new Game(userName, messageUrl, proposedTime);
             activeGames.put(userName, newGame);
 
@@ -150,21 +153,23 @@ public class GameService {
         }
     }
 
-    public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl, final @TodayButFuture Date proposedTimeAsDate) {
+    public void updateGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String responseUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
         final Game game = activeGames.get(userName);
 
         if (game != null) {
-            logger.info("Updating {}s game time from {} to {}", userName, game.getScheduledTime(), sdf.format(proposedTimeAsDate));
+            final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
 
-            game.reschedule(proposedTimeAsDate);
+            logger.info("Updating {}s game time from {} to {}", userName, game.getScheduledTime(), sdf.format(proposedTime));
 
-            final String hostRescheduledGameMessage = String.format("Your game has been successfully rescheduled to %s!", sdf.format(proposedTimeAsDate));
+            game.reschedule(proposedTime);
+
+            final String hostRescheduledGameMessage = String.format("Your game has been successfully rescheduled to %s!", sdf.format(proposedTime));
             final PrivateReply hostRescheduledGameReply = new PrivateReply(hostRescheduledGameMessage);
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostRescheduledGameReply);
 
             logger.info("The host was notified that their game was rescheduled.");
 
-            final String hostRescheduledGameReplyMessage = String.format("%ss game has been rescheduled to %s", userName, sdf.format(proposedTimeAsDate));
+            final String hostRescheduledGameReplyMessage = String.format("%ss game has been rescheduled to %s", userName, sdf.format(proposedTime));
             slackService.postMessageToChannel(hostRescheduledGameReplyMessage);
 
             logger.info("The channel was notified that {}s game has been rescheduled.", userName);
@@ -200,5 +205,17 @@ public class GameService {
         slackService.postPrivateReplyToMessage(responseUrl, statusReply);
 
         logger.info("The user was presented with current status.");
+    }
+
+    private Date getProposedTimeAsDate(final String proposedTime) {
+        final String hours = proposedTime.split(":")[0];
+        final String minutes = proposedTime.split(":")[1];
+
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hours));
+        cal.set(Calendar.MINUTE, Integer.parseInt(minutes));
+        cal.set(Calendar.SECOND, 0);
+
+        return cal.getTime();
     }
 }
