@@ -1,7 +1,5 @@
 package com.jakubstas.foosie.service.model;
 
-import com.jakubstas.foosie.validation.TodayButFuture;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,15 +14,13 @@ public class Game {
 
     private List<User> players = new ArrayList<>();
 
-    @TodayButFuture
+    //    @TodayButFuture
     private Date scheduledTime;
 
     public Game(final User player, final String gameMessageUrl, final Date scheduledTime) {
         this.gameMessageUrl = gameMessageUrl;
         this.scheduledTime = scheduledTime;
         this.host = player;
-
-        players.add(player);
     }
 
     public String getGameMessageUrl() {

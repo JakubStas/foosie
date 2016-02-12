@@ -40,7 +40,7 @@ public class GameService {
             final User host = new User(userName, userId);
 
             final Game newGame = new Game(host, messageUrl, proposedTime);
-            gamesCache.addGame(userName, newGame);
+            gamesCache.hostGame(host, newGame);
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
@@ -80,15 +80,15 @@ public class GameService {
         } else {
             if (gamesCache.getNumberOfActiveGames() == 1) {
                 // join the only active game
-                final String hostName = gamesCache.getSetOfHostNames().iterator().next();
-                final Game game = gamesCache.findByHostName(hostName);
+                final User host = gamesCache.getSetOfHosts().iterator().next();
+                final Game game = gamesCache.findByHostName(host.getUserName());
 
-                logger.info("Joining the only active game by {}", hostName);
+                logger.info("Joining the only active game by {}", host.getUserName());
 
-                joinGameByHostName(player, hostName, game, messageUrl);
+                joinGameByHostName(player, host.getUserName(), game, messageUrl);
             } else {
                 // provide the host name
-                final String activeHosts = gamesCache.getSetOfHostNames().toString();
+                final String activeHosts = gamesCache.getSetOfHosts().toString();
 
                 logger.info("Several active games at the moment. Presenting {} with following options: {}", player.getUserName(), activeHosts);
 
@@ -195,9 +195,9 @@ public class GameService {
 
             stringBuffer.append("Active games:\n\n");
 
-            for (final String hostName : gamesCache.getSetOfHostNames()) {
-                final Game game = gamesCache.findByHostName(hostName);
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, hostName, sdf.format(game.getScheduledTime()), game.getPlayers().size());
+            for (final User host : gamesCache.getSetOfHosts()) {
+                final Game game = gamesCache.findByHostName(host.getUserName());
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.format(game.getScheduledTime()), game.getPlayers().size());
                 stringBuffer.append(gameStatus);
                 i++;
             }

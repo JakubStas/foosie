@@ -10,19 +10,19 @@ public class SlashCommandUtils {
 
     private final RestTemplate restTemplate = new TestRestTemplate();
 
-    public final void slashNewCommand(final String userName, final String proposedTime, final String responseUrl) {
-        final String url = newUriBuilder().queryParam("user_name", userName).queryParam("text", proposedTime).queryParam("response_url", responseUrl).build().toString();
+    public final void slashNewCommand(final String userName, final String userId, final String proposedTime, final String responseUrl) {
+        final String url = newUriBuilder().queryParam("user_name", userName).queryParam("user_id", userId).queryParam("text", proposedTime).queryParam("response_url", responseUrl).build().toString();
 
         restTemplate.postForLocation(url, null);
     }
 
-    public final void slashIaminCommand(final String userName, final Optional<String> hostNameOptional, final String responseUrl) {
+    public final void slashIaminCommand(final String userName, final String userId, final Optional<String> hostNameOptional, final String responseUrl) {
         final String url;
 
         if (hostNameOptional.isPresent()) {
-            url = newUriBuilder().path("join").queryParam("user_name", userName).queryParam("text", hostNameOptional.get()).queryParam("response_url", responseUrl).build().toString();
+            url = newUriBuilder().path("join").queryParam("user_name", userName).queryParam("user_id", userId).queryParam("text", hostNameOptional.get()).queryParam("response_url", responseUrl).build().toString();
         } else {
-            url = newUriBuilder().path("join").queryParam("user_name", userName).queryParam("response_url", responseUrl).build().toString();
+            url = newUriBuilder().path("join").queryParam("user_name", userName).queryParam("user_id", userId).queryParam("response_url", responseUrl).build().toString();
         }
 
         restTemplate.postForLocation(url, null);
