@@ -14,7 +14,7 @@ import javax.validation.Validator;
 @Configuration
 @EnableAutoConfiguration
 @EnableAspectJAutoProxy
-@EnableConfigurationProperties({SlackProperties.class})
+@EnableConfigurationProperties({SlackProperties.class, FoosieProperties.class})
 public class ApplicationConfiguration {
 
     @Bean
