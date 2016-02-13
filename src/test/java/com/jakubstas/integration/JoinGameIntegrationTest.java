@@ -32,7 +32,9 @@ public class JoinGameIntegrationTest extends IntegrationTest {
     public void userShouldJoinNewGameWithoutSpecifyingHostName() {
         // given
         final String hostName = "jakub";
+        final String hostId = "123";
         final String userName = "karol";
+        final String userId = "456";
         final String proposedTime = "12:00";
         final String responseUrl = "http://localhost:" + slackPort;
 
@@ -48,10 +50,10 @@ public class JoinGameIntegrationTest extends IntegrationTest {
         // expect private Slack message about new client joining the game
         mockServerClient.when(getNotificationThatNewPlayerJoinedGamePrivateMessageRequest()).respond(response().withStatusCode(200));
 
-        slashCommandUtils.slashNewCommand(hostName, proposedTime, responseUrl);
+        slashCommandUtils.slashNewCommand(hostName, hostId, proposedTime, responseUrl);
 
         // when
-        slashCommandUtils.slashIaminCommand(userName, Optional.empty(), responseUrl);
+        slashCommandUtils.slashIaminCommand(userName, userId, Optional.empty(), responseUrl);
 
         // then
         mockServerClient.verify(getNewGameInviteAtTwelvePrivateMessageRequest(), VerificationTimes.exactly(1));
@@ -78,6 +80,6 @@ public class JoinGameIntegrationTest extends IntegrationTest {
     }
 
     private HttpRequest getNotificationThatNewPlayerJoinedGamePrivateMessageRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.newPlayerJoinedGameNotificationPrivateMessageBody);
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNewPlayerJoinedGameNotificationPrivateMessageBody("jakub"));
     }
 }

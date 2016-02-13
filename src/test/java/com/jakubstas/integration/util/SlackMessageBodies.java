@@ -12,7 +12,11 @@ public final class SlackMessageBodies {
 
     public final static String gameLobbyHasBeenCreatedPrivateMessageBody = "{\"text\":\"Lobby for jakubs game starting at 12:00\\n:ballot_box_with_check: jakub\",\"attachments\":[{\"text\":null}]}";
 
-    public final static String newPlayerJoinedGameNotificationPrivateMessageBody = "{\"text\":\":ballot_box_with_check: karol\",\"attachments\":[{\"text\":null}]}";
+    private final static String newPlayerJoinedGameNotificationPrivateMessageBody = "{\"text\":\":ballot_box_with_check: %s\",\"attachments\":[{\"text\":null}]}";
 
     public final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by jakub starting at 12:00\",\"attachments\":[{\"text\":null}]}";
+
+    public static String createNewPlayerJoinedGameNotificationPrivateMessageBody(final String userName) {
+        return String.format(newPlayerJoinedGameNotificationPrivateMessageBody, userName);
+    }
 }

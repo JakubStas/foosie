@@ -1,4 +1,4 @@
-package com.jakubstas.foosie.slack.model;
+package com.jakubstas.foosie.slack.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -31,6 +31,7 @@ public class GameSetupIntegrationTest extends IntegrationTest {
     @Test
     public void newGameInviteShouldBeCreated() {
         final String userName = "jakub";
+        final String userId = "123";
         final String proposedTime = "12:00";
         final String responseUrl = "http://localhost:" + slackPort;
 
@@ -46,7 +47,7 @@ public class GameSetupIntegrationTest extends IntegrationTest {
         slashCommandUtils.slashGamesCommand(userName, responseUrl);
 
         // when
-        slashCommandUtils.slashNewCommand(userName, proposedTime, responseUrl);
+        slashCommandUtils.slashNewCommand(userName, userId, proposedTime, responseUrl);
 
         // then
         mockServerClient.verify(getGamesCommandWithNoActiveGameRequest(), VerificationTimes.exactly(1));

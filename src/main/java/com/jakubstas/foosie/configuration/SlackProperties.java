@@ -7,6 +7,8 @@ public class SlackProperties {
 
     private String incomingWebHookUri;
 
+    private String authToken;
+
     private String iaminCommandToken;
 
     private String newCommandToken;
@@ -63,5 +65,13 @@ public class SlackProperties {
 
     public void setStatusCommandToken(String statusCommandToken) {
         this.statusCommandToken = statusCommandToken;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 }

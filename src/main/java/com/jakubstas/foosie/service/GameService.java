@@ -3,6 +3,7 @@ package com.jakubstas.foosie.service;
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.service.model.GamesCache;
+import com.jakubstas.foosie.service.model.User;
 import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
@@ -31,14 +32,15 @@ public class GameService {
     @Autowired
     private GamesCache gamesCache;
 
-    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
+    public void createGame(final @NotBlank(message = "Username cannot be empty!") String userName, final @NotBlank(message = "User ID cannot be empty!") String userId, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl, final @TwentyFourHourFormat String proposedTimeInHours) {
         final Game game = gamesCache.findByHostName(userName);
 
         if (game == null) {
             final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
+            final User host = new User(userName, userId);
 
-            final Game newGame = new Game(userName, messageUrl, proposedTime);
-            gamesCache.addGame(userName, newGame);
+            final Game newGame = new Game(host, messageUrl, proposedTime);
+            gamesCache.hostGame(host, newGame);
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
@@ -64,7 +66,9 @@ public class GameService {
         }
     }
 
-    public void joinGame(final @NotBlank(message = "Username cannot be empty!") String userName, final Optional<String> hostNameOptional, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
+    public void joinGame(final String userName, final String userId, final Optional<String> hostNameOptional, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
+        final User player = new User(userName, userId);
+
         if (hostNameOptional.isPresent()) {
             // join the game by host name
             final String hostName = hostNameOptional.get();
@@ -72,21 +76,21 @@ public class GameService {
 
             logger.info("Trying to join a game by {}", hostName);
 
-            joinGameByHostName(userName, hostName, game, messageUrl);
+            joinGameByHostName(player, hostName, game, messageUrl);
         } else {
             if (gamesCache.getNumberOfActiveGames() == 1) {
                 // join the only active game
-                final String hostName = gamesCache.getSetOfHostNames().iterator().next();
-                final Game game = gamesCache.findByHostName(hostName);
+                final User host = gamesCache.getSetOfHosts().iterator().next();
+                final Game game = gamesCache.findByHostName(host.getUserName());
 
-                logger.info("Joining the only active game by {}", hostName);
+                logger.info("Joining the only active game by {}", host.getUserName());
 
-                joinGameByHostName(userName, hostName, game, messageUrl);
+                joinGameByHostName(player, host.getUserName(), game, messageUrl);
             } else {
                 // provide the host name
-                final String activeHosts = gamesCache.getSetOfHostNames().toString();
+                final String activeHosts = gamesCache.getSetOfHosts().toString();
 
-                logger.info("Several active games at the moment. Presenting {} with following options: {}", userName, activeHosts);
+                logger.info("Several active games at the moment. Presenting {} with following options: {}", player.getUserName(), activeHosts);
 
                 final PrivateReply privateConfirmation = new PrivateReply("There are several active games at the moment. Pick the one that you like - " + activeHosts);
                 slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
@@ -94,7 +98,7 @@ public class GameService {
         }
     }
 
-    private void joinGameByHostName(final @NotBlank(message = "Username cannot be empty!") String userName, final String hostName, final Game game, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
+    private void joinGameByHostName(final User player, final String hostName, final Game game, final @NotBlank(message = "Response URL cannot be empty!") String messageUrl) {
         if (game == null) {
             logger.info("No active game by {} found!", hostName);
 
@@ -105,22 +109,22 @@ public class GameService {
             return;
         }
 
-        if (game.getPlayerIds().contains(userName)) {
-            logger.info("{} has already joined {}s game.", userName, hostName);
+        if (game.getPlayerByName(hostName).isPresent()) {
+            logger.info("{} has already joined {}s game.", hostName, hostName);
 
             final PrivateReply privateReply = new PrivateReply("You have already joined this game! Nothing left but wait for other players to join in");
             slackService.postPrivateReplyToMessage(messageUrl, privateReply);
         } else {
-            logger.info("Adding {} to {}s game.", userName, hostName);
+            logger.info("Adding {} to {}s game.", hostName, hostName);
 
-            game.getPlayerIds().add(userName);
+            game.join(player);
 
-            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + userName);
+            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + hostName);
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
 
-            logger.info("The host was notified that {} joined their game.", userName);
+            logger.info("The host was notified that {} joined their game.", hostName);
 
-            final String privateConfirmationMessage = String.format("You have successfully joined game by %s starting at %s", game.getPlayerIds().get(0), sdf.format(game.getScheduledTime()));
+            final String privateConfirmationMessage = String.format("You have successfully joined game by %s starting at %s", game.getHost().getUserName(), sdf.format(game.getScheduledTime()));
             final PrivateReply privateConfirmation = new PrivateReply(privateConfirmationMessage);
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
@@ -191,9 +195,9 @@ public class GameService {
 
             stringBuffer.append("Active games:\n\n");
 
-            for (final String hostName : gamesCache.getSetOfHostNames()) {
-                final Game game = gamesCache.findByHostName(hostName);
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, hostName, sdf.format(game.getScheduledTime()), game.getPlayerIds().size());
+            for (final User host : gamesCache.getSetOfHosts()) {
+                final Game game = gamesCache.findByHostName(host.getUserName());
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.format(game.getScheduledTime()), game.getPlayers().size());
                 stringBuffer.append(gameStatus);
                 i++;
             }

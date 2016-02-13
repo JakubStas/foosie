@@ -25,20 +25,20 @@ public class GameController {
     private SlackProperties slackProperties;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text") String proposedTime) {
+    public void createGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "user_id") String userId, @RequestParam(value = "text") String proposedTime) {
         if (slackProperties.getNewCommandToken().equals(token)) {
-            gameService.createGame(userName, responseUrl, proposedTime);
+            gameService.createGame(userName, userId, responseUrl, proposedTime);
         } else {
             logger.warn("Cannot create a new game - invalid token!");
         }
     }
 
     @RequestMapping(path = "join", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public void joinGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "text", required = false) String hostName) {
+    public void joinGame(@RequestParam(value = "response_url") String responseUrl, @RequestParam(value = "token") String token, @RequestParam(value = "user_name") String userName, @RequestParam(value = "user_id") String userId, @RequestParam(value = "text", required = false) String hostName) {
         if (slackProperties.getIaminCommandToken().equals(token)) {
             final Optional<String> hostNameOptional = StringUtils.hasText(hostName) ? Optional.of(hostName) : Optional.empty();
 
-            gameService.joinGame(userName, hostNameOptional, responseUrl);
+            gameService.joinGame(userName, userId, hostNameOptional, responseUrl);
         } else {
             logger.warn("Cannot join a game - invalid token!");
         }
