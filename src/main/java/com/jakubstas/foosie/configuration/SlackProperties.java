@@ -18,7 +18,7 @@ public class SlackProperties {
     private String cancelCommandToken;
 
     private String statusCommandToken;
-
+    
     public String getIncomingWebHookUri() {
         return incomingWebHookUri;
     }
