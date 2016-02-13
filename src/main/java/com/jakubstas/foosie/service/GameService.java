@@ -189,7 +189,8 @@ public class GameService {
         logger.debug("Kicking off game hosted by {}", game.getHost().getUserName());
 
         for (User player : game.getPlayers()) {
-            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player);
+//            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
+            final String gameKickOffMessage = String.format("Go!");
             slackService.postPrivateMessageToPlayer(player, gameKickOffMessage);
         }
 
