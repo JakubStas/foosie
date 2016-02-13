@@ -197,7 +197,7 @@ public class GameService {
 
             for (final User host : gamesCache.getSetOfHosts()) {
                 final Game game = gamesCache.findByHostName(host.getUserName());
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.format(game.getScheduledTime()), game.getPlayers().size());
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.format(game.getScheduledTime()), game.getPlayers().size() + 1);
                 stringBuffer.append(gameStatus);
                 i++;
             }
