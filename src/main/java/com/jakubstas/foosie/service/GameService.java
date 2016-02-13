@@ -119,7 +119,7 @@ public class GameService {
 
             game.join(player);
 
-            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + hostName);
+            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + player.getUserName());
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
 
             logger.info("The host was notified that {} joined their game.", hostName);

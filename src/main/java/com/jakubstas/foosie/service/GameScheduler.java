@@ -4,6 +4,8 @@ import com.jakubstas.foosie.configuration.FoosieProperties;
 import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.service.model.GamesCache;
 import com.jakubstas.foosie.service.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,8 @@ import java.util.Calendar;
 
 @Component
 public class GameScheduler {
+
+    private final Logger logger = LoggerFactory.getLogger(GameScheduler.class);
 
     @Autowired
     private GameService gameService;
@@ -24,8 +28,12 @@ public class GameScheduler {
 
     @Scheduled(fixedRate = 60_000)
     public void kickOffUpcomingGames() {
+        logger.debug("Game scheduler triggered!");
+
         for (final User host : gamesCache.getSetOfHosts()) {
             final Game game = gamesCache.findByHostName(host.getUserName());
+
+            logger.debug("Checking {}s game scheduled at {}", host.getUserName(), game.getScheduledTime());
 
             if (shouldBeKickedOff(game)) {
                 gameService.kickOffGame(game);
@@ -43,10 +51,17 @@ public class GameScheduler {
         final boolean dayMatches = calNow.get(Calendar.DAY_OF_MONTH) == calGame.get(Calendar.DAY_OF_MONTH);
         final boolean hourMatches = calNow.get(Calendar.HOUR_OF_DAY) == calGame.get(Calendar.HOUR_OF_DAY);
 
+        logger.debug("Year match: " + (yearMatches ? "yes" : "no"));
+        logger.debug("Month match: " + (monthMatches ? "yes" : "no"));
+        logger.debug("Day match: " + (dayMatches ? "yes" : "no"));
+        logger.debug("Hour match: " + (hourMatches ? "yes" : "no"));
+
         final int nowMinutes = calNow.get(Calendar.MINUTE);
         final int gameMinutes = calGame.get(Calendar.MINUTE);
 
-        final boolean minutesMatch = gameMinutes + foosieProperties.getScheduleBefore() == nowMinutes;
+        final boolean minutesMatch = nowMinutes + foosieProperties.getScheduleBefore() == gameMinutes;
+
+        logger.debug("Minute match: " + (minutesMatch ? "yes" : "no"));
 
         return yearMatches && monthMatches && dayMatches && hourMatches && minutesMatch;
     }

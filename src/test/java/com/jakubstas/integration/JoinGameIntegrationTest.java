@@ -80,6 +80,6 @@ public class JoinGameIntegrationTest extends IntegrationTest {
     }
 
     private HttpRequest getNotificationThatNewPlayerJoinedGamePrivateMessageRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNewPlayerJoinedGameNotificationPrivateMessageBody("jakub"));
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNewPlayerJoinedGameNotificationPrivateMessageBody("karol"));
     }
 }
