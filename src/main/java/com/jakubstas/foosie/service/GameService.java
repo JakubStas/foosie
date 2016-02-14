@@ -186,12 +186,12 @@ public class GameService {
     }
 
     public void kickOffGame(final Game game) {
-        logger.debug("Kicking off game hosted by {}", game.getHost().getUserName());
+        logger.info("Kicking off game hosted by {}", game.getHost().getUserName());
 
-        logger.debug("Number of players: " + game.getPlayers().size());
+        logger.info("Number of players: " + game.getPlayers().size());
 
         for (User player : game.getPlayers()) {
-            logger.debug("Pinging: " + player.getUserName());
+            logger.info("Pinging: " + player.getUserName());
 //            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
             final String gameKickOffMessage = String.format("Go!");
             slackService.postPrivateMessageToPlayer(player, gameKickOffMessage);
@@ -202,7 +202,7 @@ public class GameService {
         final String gameStartedMessage = String.format("%ss game has started", game.getHost().getUserName());
         slackService.postMessageToChannel(gameStartedMessage);
 
-        logger.debug("The game hosted by {} has just started and has been removed from active games list.", game.getHost().getUserName());
+        logger.info("The game hosted by {} has just started and has been removed from active games list.", game.getHost().getUserName());
     }
 
     public void getStatus(final @NotBlank(message = "Response URL cannot be empty!") String responseUrl) {
