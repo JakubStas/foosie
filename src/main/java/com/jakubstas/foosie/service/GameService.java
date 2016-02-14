@@ -197,6 +197,9 @@ public class GameService {
             slackService.postPrivateMessageToPlayer(player, gameKickOffMessage);
         }
 
+        final String gameKickOffMessage = String.format("Go!");
+        slackService.postPrivateMessageToPlayer(game.getHost(), gameKickOffMessage);
+
         gamesCache.cancelGameByHost(game.getHost().getUserName());
 
         final String gameStartedMessage = String.format("%ss game has started", game.getHost().getUserName());
