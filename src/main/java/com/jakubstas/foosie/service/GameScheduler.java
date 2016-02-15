@@ -35,9 +35,9 @@ public class GameScheduler {
 
             logger.info("Checking {}s game scheduled at {}", host.getUserName(), game.getScheduledTime());
 
-            if (shouldBeKickedOff(game)) {
+            //if (shouldBeKickedOff(game)) {
                 gameService.kickOffGame(game);
-            }
+            //}
         }
     }
 
@@ -50,11 +50,6 @@ public class GameScheduler {
         final boolean monthMatches = calNow.get(Calendar.MONTH) == calGame.get(Calendar.MONTH);
         final boolean dayMatches = calNow.get(Calendar.DAY_OF_MONTH) == calGame.get(Calendar.DAY_OF_MONTH);
         final boolean hourMatches = calNow.get(Calendar.HOUR_OF_DAY) == calGame.get(Calendar.HOUR_OF_DAY);
-
-        logger.info("Year match: " + (yearMatches ? "yes" : "no"));
-        logger.info("Month match: " + (monthMatches ? "yes" : "no"));
-        logger.info("Day match: " + (dayMatches ? "yes" : "no"));
-        logger.info("Hour match: " + (hourMatches ? "yes" : "no"));
 
         final int nowMinutes = calNow.get(Calendar.MINUTE);
         final int gameMinutes = calGame.get(Calendar.MINUTE);
