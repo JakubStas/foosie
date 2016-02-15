@@ -79,10 +79,8 @@ public class SlackService {
     private void postPrivateMessageToPlayerChannel(final String text, final String channelId) throws UnsupportedEncodingException {
         logger.info("Posting private message to user channel: {}", channelId);
 
-        final String uriAsString = UriComponentsBuilder.fromUriString(postPrivateMessagePath).queryParam("token", slackProperties.getAuthToken()).queryParam("channel", channelId).queryParam("text", text).queryParam("pretty", 1).build(true).toString();
-
-        final String encodedUriAsString = URLEncoder.encode(uriAsString, Charsets.UTF_8.name());
-        final URI uri = URI.create(encodedUriAsString);
+        final String uriAsString = UriComponentsBuilder.fromUriString(postPrivateMessagePath).queryParam("token", slackProperties.getAuthToken()).queryParam("channel", channelId).queryParam("text", URLEncoder.encode(text, Charsets.UTF_8.name())).queryParam("pretty", 1).build(true).toString();
+        final URI uri = URI.create(uriAsString);
 
         logger.info("URI = " + uri.toString());
         logger.info("Message = " + text);
