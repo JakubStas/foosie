@@ -61,12 +61,12 @@ public class SlackService {
         closePrivateMessageChannel(channelId);
     }
 
-    private String openPrivateMessageChannelAndReturnChannelId(final User player) throws UnsupportedEncodingException {
+    private String openPrivateMessageChannelAndReturnChannelId(final User player) {
         logger.info("Opening private message channel to user: {}", player.getUserName());
 
         final String uriAsString = UriComponentsBuilder.fromUriString(openPrivateMessageChannelPath).queryParam("token", slackProperties.getAuthToken()).queryParam("user", player.getUserId()).queryParam("pretty", 1).build(true).toString();
-        final String encodedUriAsString = URLEncoder.encode(uriAsString, Charsets.UTF_8.name());
-        final URI uri = URI.create(encodedUriAsString);
+
+        final URI uri = URI.create(uriAsString);
 
         logger.info("URI = " + uri.toString());
 
@@ -76,12 +76,13 @@ public class SlackService {
         return openChannelResponse.getChannel().getId();
     }
 
-    private void postPrivateMessageToPlayerChannel(final String text, final String channelId) {
+    private void postPrivateMessageToPlayerChannel(final String text, final String channelId) throws UnsupportedEncodingException {
         logger.info("Posting private message to user channel: {}", channelId);
 
         final String uriAsString = UriComponentsBuilder.fromUriString(postPrivateMessagePath).queryParam("token", slackProperties.getAuthToken()).queryParam("channel", channelId).queryParam("text", text).queryParam("pretty", 1).build(true).toString();
 
-        final URI uri = URI.create(uriAsString);
+        final String encodedUriAsString = URLEncoder.encode(uriAsString, Charsets.UTF_8.name());
+        final URI uri = URI.create(encodedUriAsString);
 
         logger.info("URI = " + uri.toString());
         logger.info("Message = " + text);
