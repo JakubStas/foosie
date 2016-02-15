@@ -28,12 +28,12 @@ public class GameScheduler {
 
     @Scheduled(fixedRate = 60_000)
     public void kickOffUpcomingGames() {
-        logger.debug("Game scheduler triggered!");
+        logger.info("Game scheduler triggered!");
 
         for (final User host : gamesCache.getSetOfHosts()) {
             final Game game = gamesCache.findByHostName(host.getUserName());
 
-            logger.debug("Checking {}s game scheduled at {}", host.getUserName(), game.getScheduledTime());
+            logger.info("Checking {}s game scheduled at {}", host.getUserName(), game.getScheduledTime());
 
             if (shouldBeKickedOff(game)) {
                 gameService.kickOffGame(game);
@@ -51,17 +51,17 @@ public class GameScheduler {
         final boolean dayMatches = calNow.get(Calendar.DAY_OF_MONTH) == calGame.get(Calendar.DAY_OF_MONTH);
         final boolean hourMatches = calNow.get(Calendar.HOUR_OF_DAY) == calGame.get(Calendar.HOUR_OF_DAY);
 
-        logger.debug("Year match: " + (yearMatches ? "yes" : "no"));
-        logger.debug("Month match: " + (monthMatches ? "yes" : "no"));
-        logger.debug("Day match: " + (dayMatches ? "yes" : "no"));
-        logger.debug("Hour match: " + (hourMatches ? "yes" : "no"));
+        logger.info("Year match: " + (yearMatches ? "yes" : "no"));
+        logger.info("Month match: " + (monthMatches ? "yes" : "no"));
+        logger.info("Day match: " + (dayMatches ? "yes" : "no"));
+        logger.info("Hour match: " + (hourMatches ? "yes" : "no"));
 
         final int nowMinutes = calNow.get(Calendar.MINUTE);
         final int gameMinutes = calGame.get(Calendar.MINUTE);
 
         final boolean minutesMatch = nowMinutes + foosieProperties.getScheduleBefore() == gameMinutes;
 
-        logger.debug("Minute match: " + (minutesMatch ? "yes" : "no"));
+        logger.info("Minute match: " + (minutesMatch ? "yes" : "no"));
 
         return yearMatches && monthMatches && dayMatches && hourMatches && minutesMatch;
     }
