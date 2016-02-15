@@ -1,5 +1,6 @@
 package com.jakubstas.foosie.slack;
 
+import com.google.common.base.Charsets;
 import com.jakubstas.foosie.configuration.SlackProperties;
 import com.jakubstas.foosie.rest.PrivateReply;
 import com.jakubstas.foosie.service.model.User;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 
 @Service
 public class SlackService {
@@ -52,18 +55,18 @@ public class SlackService {
         restTemplate.postForLocation(uri, privateReply);
     }
 
-    public void postPrivateMessageToPlayer(final User player, final String text) {
+    public void postPrivateMessageToPlayer(final User player, final String text) throws UnsupportedEncodingException {
         final String channelId = openPrivateMessageChannelAndReturnChannelId(player);
         postPrivateMessageToPlayerChannel(text, channelId);
         closePrivateMessageChannel(channelId);
     }
 
-    private String openPrivateMessageChannelAndReturnChannelId(final User player) {
+    private String openPrivateMessageChannelAndReturnChannelId(final User player) throws UnsupportedEncodingException {
         logger.info("Opening private message channel to user: {}", player.getUserName());
 
         final String uriAsString = UriComponentsBuilder.fromUriString(openPrivateMessageChannelPath).queryParam("token", slackProperties.getAuthToken()).queryParam("user", player.getUserId()).queryParam("pretty", 1).build(true).toString();
-
-        final URI uri = URI.create(uriAsString);
+        final String encodedUriAsString = URLEncoder.encode(uriAsString, Charsets.UTF_8.name());
+        final URI uri = URI.create(encodedUriAsString);
 
         logger.info("URI = " + uri.toString());
 

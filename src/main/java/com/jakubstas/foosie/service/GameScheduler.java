@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
 @Component
@@ -27,7 +28,7 @@ public class GameScheduler {
     private FoosieProperties foosieProperties;
 
     @Scheduled(fixedRate = 60_000)
-    public void kickOffUpcomingGames() {
+    public void kickOffUpcomingGames() throws UnsupportedEncodingException {
         logger.info("Game scheduler triggered!");
 
         for (final User host : gamesCache.getSetOfHosts()) {

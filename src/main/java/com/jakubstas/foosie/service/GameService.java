@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -185,7 +186,7 @@ public class GameService {
         }
     }
 
-    public void kickOffGame(final Game game) {
+    public void kickOffGame(final Game game) throws UnsupportedEncodingException {
         logger.info("Kicking off game hosted by {}", game.getHost().getUserName());
 
         for (User player : game.getPlayers()) {
