@@ -29,8 +29,6 @@ public class GameScheduler {
 
     @Scheduled(fixedRate = 60_000)
     public void kickOffUpcomingGames() throws UnsupportedEncodingException {
-        logger.info("Game scheduler triggered!");
-
         for (final User host : gamesCache.getSetOfHosts()) {
             final Game game = gamesCache.findByHostName(host.getUserName());
 
