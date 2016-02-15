@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -62,18 +61,7 @@ public class SlackService {
     private String openPrivateMessageChannelAndReturnChannelId(final User player) {
         logger.info("Opening private message channel to user: {}", player.getUserName());
 
-        logger.info("URI = " + openPrivateMessageChannelPath);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(openPrivateMessageChannelPath);
-        logger.info("slack token = " + slackProperties.getAuthToken());
-        builder = builder.queryParam("token", slackProperties.getAuthToken());
-        logger.info("player ID = " + player.getUserId());
-        builder = builder.queryParam("user", player.getUserId());
-        logger.info("adding pretty");
-        builder = builder.queryParam("pretty", 1);
-        logger.info("building uri");
-        final UriComponents uriComponents = builder.build(true);
-
-        final String uriAsString = uriComponents.toString();
+        final String uriAsString = UriComponentsBuilder.fromUriString(openPrivateMessageChannelPath).queryParam("token", slackProperties.getAuthToken()).queryParam("user", player.getUserId()).queryParam("pretty", 1).build(true).toString();
 
         final URI uri = URI.create(uriAsString);
 

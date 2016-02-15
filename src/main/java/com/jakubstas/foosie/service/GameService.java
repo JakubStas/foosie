@@ -188,16 +188,14 @@ public class GameService {
     public void kickOffGame(final Game game) {
         logger.info("Kicking off game hosted by {}", game.getHost().getUserName());
 
-        logger.info("Number of players: " + game.getPlayers().size());
-
         for (User player : game.getPlayers()) {
             logger.info("Pinging: " + player.getUserName());
-//            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
-            final String gameKickOffMessage = String.format("Go!");
+
+            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
             slackService.postPrivateMessageToPlayer(player, gameKickOffMessage);
         }
 
-        final String gameKickOffMessage = String.format("Go!");
+        final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", game.getHost().getUserName());
         slackService.postPrivateMessageToPlayer(game.getHost(), gameKickOffMessage);
 
         gamesCache.cancelGameByHost(game.getHost().getUserName());

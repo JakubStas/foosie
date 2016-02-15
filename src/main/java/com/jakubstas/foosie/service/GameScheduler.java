@@ -35,9 +35,9 @@ public class GameScheduler {
 
             logger.info("Checking {}s game scheduled at {}", host.getUserName(), game.getScheduledTime());
 
-            //if (shouldBeKickedOff(game)) {
+            if (shouldBeKickedOff(game)) {
                 gameService.kickOffGame(game);
-            //}
+            }
         }
     }
 
