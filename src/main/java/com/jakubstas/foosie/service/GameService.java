@@ -192,7 +192,7 @@ public class GameService {
         for (User player : game.getPlayers()) {
             logger.info("Pinging: " + player.getUserName());
 
-            final String gameKickOffMessage = String.format("%ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
+            final String gameKickOffMessage = String.format("Message from Foosie: %ss game is about to start. Head off to the table and get ready for your game!", player.getUserName());
             slackService.postPrivateMessageToPlayer(player, gameKickOffMessage);
         }
 
