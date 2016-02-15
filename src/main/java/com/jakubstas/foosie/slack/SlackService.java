@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import java.net.URI;
 
 @Service
@@ -32,13 +31,6 @@ public class SlackService {
 
     @Autowired
     private SlackProperties slackProperties;
-
-    @PostConstruct
-    public void setup() {
-        final String s = openPrivateMessageChannelAndReturnChannelId(new User("jakub", "U0LHQNY0M"));
-        postPrivateMessageToPlayerChannel("asdsad", s);
-        closePrivateMessageChannel(s);
-    }
 
     public void postMessageToChannel(final String message) {
         logger.info("Posting message: {}", message);
