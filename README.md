@@ -75,13 +75,13 @@ Upon issuing this command, Foosie will do following things:
 In case this command is issued while several active games are waiting for the player, you are presented with a list of the hosts of these active games you may choose from and make use of the first mentioned version of this command.
 
 # How to set up Foosie
-TODO
+In this part I will describe how to set up the application it self and the Slack as a client. Since Foosie is using several ways to communicate with Slack, you will need to provide a bit more details than in the application using a single approach. Let's dig in!
 
 ## Slash commands
 
 Foosie is designed to leverage custom slash commands you can define in admin section of your Slack team `https://your-team.slack.com/apps/manage/custom-integrations`. In order to connect Foosie and Slack, I recommend creating a set of slash commands to drive your game management.
 
-Each slash command comes with the token. This token will be sent in the outgoing payload and it is used to verify that the request came from your Slack team. You should specify these tokens as environment variables according to naming conventions put forward in `application.properties` file. Slack requires all integrations to make use of `https` protocol and that is why I recommend hosting this application in AWS or Heroku which provide an easy way to meet this requirement.
+Each slash command comes with the token. This token will be sent in the outgoing payload and it is used to verify that the request came from your Slack team. You should specify these tokens as environment variables according to naming conventions put forward in [`application.properties`](https://github.com/JakubStas/foosie/blob/master/src/main/resources/application.properties) file. Slack requires all integrations to make use of `https` protocol and that is why I recommend hosting this application in AWS or Heroku which provide an easy way to meet this requirement.
 
 Integration using slash commands requires the application to use either `GET` or `POST` requests so the desing of the REST API was heavily influenced by this requirement (no use of `PUT`, `DELETE` or any other HTTP method).
 
@@ -92,3 +92,4 @@ I am currently using following set of slash commands but feel free to customize 
 * **/reschedule [proposed time]** Reschedules the game. This command is only available to the active hosts. (uses `POST` method)
 * **/cancel** Cancels active game. This command is only available to the active hosts. (uses `POST` method)
 * **/games** Returns the list of active games with the information about the host, scheduled time and the number of players currently in the game lobby. (uses `GET` method)
+
