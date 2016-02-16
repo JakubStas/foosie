@@ -78,12 +78,29 @@ In case this command is issued while several active games are waiting for the pl
 In this part I will describe how to set up the application itself and the Slack as a client. Since Foosie is using several ways to communicate with Slack, you will need to provide a bit more details than in the normal business-focused application using a single approach. Let's dig in!
 
 ## Slash commands
-
 Foosie is designed to leverage custom slash commands you can define in admin section of your Slack team `https://your-team.slack.com/apps/manage/custom-integrations`. In order to connect Foosie and Slack, I recommend creating a set of slash commands to drive your game management.
 
 Each slash command comes with the token. This token will be sent in the outgoing payload and it is used to verify that the request came from your Slack team. You should specify these tokens as environment variables according to naming conventions put forward in [`application.properties`](https://github.com/JakubStas/foosie/blob/master/src/main/resources/application.properties) file. Slack requires all integrations to make use of `https` protocol and that is why I recommend hosting this application in AWS or Heroku which provide an easy way to meet this requirement.
 
 Integration using slash commands requires the application to use either `GET` or `POST` requests so the desing of the REST API was heavily influenced by this restriction (no use of `PUT`, `DELETE` or any other HTTP method).
+
+## Incoming Webhooks
+While slash commands work great to drive the 'engine' of the application, when it comes to simple posting of messages to a channel Incoming Webhooks are a good way to go. For the purposes of posting messages to `#general` channel make sure you setup an Incoming Webhook and note the URL.
+
+```
+https://hooks.slack.com/services/XXX/YYY/ZZZ
+```
+
+You should specify the last three path segments from this URL as a value of an environment property named `incoming-web-hook-uri`. This will ensure that the bot is be able to post public messages into a channel. You can configure the channel you want it to post to while setting up the incoming webhook.
+
+## Slack Web API
+Last thing left to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
+
+```
+https://api.slack.com/web
+```
+
+You should use the full token as a value of an environment property named `slack.auth-token`. This will ensure that the bot will be able to post private messages to the user (since the full-access has been granted).
 
 # Recommended Slack settings
 I am currently using following set of slash commands but feel free to customize it in a way that best suits your and your teams needs.
