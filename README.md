@@ -111,3 +111,11 @@ I am currently using following set of slash commands but feel free to customize 
 * **/cancel** (uses `POST` method to `/cancel`)
 * **/games** (uses `GET` method to `/`)
 
+## Further customization
+All of these Slack integration options can be further customized by providing a name, description or hint. I recommend you fill these out so that the users in your channel can fully benefit from this bot. As any other user in your team, even Foosie deserves a proper avatar. I recommend using the image included in the resources so that even Foosie can get that nice feeling of identity.
+
+```
+foosie/src/main/resources/avatar.jpg
+```
+
+Image by [Matthew MennoBoy](http://matthew.mennoboy.com/2005/07/14/foosball-desktop-wallpapers/)
