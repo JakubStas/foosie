@@ -97,7 +97,7 @@ You should specify the last three path segments from this URL as a value of an e
 Last thing left to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
 
 ```
-[https://api.slack.com/web](https://api.slack.com/web)
+https://api.slack.com/web
 ```
 
 You should use the full token as a value of an environment property named `slack.auth-token`. This will ensure that the bot will be able to post private messages to the user (since the full-access has been granted).
