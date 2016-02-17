@@ -2,21 +2,45 @@ package com.jakubstas.integration.util;
 
 public final class SlackMessageBodies {
 
-    public final static String noActiveGamesPrivateMessageBody = "{\"text\":\"There are no active games right now.\",\"attachments\":[{\"text\":null}]}";
+    private final static String noActiveGamesPrivateMessageBody = "{\"text\":\"There are no active games right now.\",\"attachments\":[{\"text\":null}]}";
 
-    public final static String oneActiveGamePrivateMessageBody = "{\"text\":\"Active games:\\n\\n1. hosted by jakub starts at 12:00 (1 player(s))\\n\",\"attachments\":[{\"text\":null}]}";
+    private final static String oneActiveGamePrivateMessageBody = "{\"text\":\"Active games:\\n\\n1. hosted by %s starts at %s (%d player(s))\\n\",\"attachments\":[{\"text\":null}]}";
 
-    public final static String gameInviteAtTwelvePostedPrivateMessageBody = "{\"text\":\"Your game invite has been posted. The game is scheduled for 12:00 and following players joined in:\",\"attachments\":[{\"text\":null}]}";
+    private final static String gameInvitePrivateMessageBody = "{\"text\":\"Your game invite has been posted. The game is scheduled for %s and following players joined in:\",\"attachments\":[{\"text\":null}]}";
 
-    public final static String gameInviteAtTwelvePostedChannelMessageBody = "{\"text\":\"jakub wants to play a game at 12:00. Who's in?\"}";
+    private final static String gameInviteChannelMessageBody = "{\"text\":\"%s wants to play a game at %s. Who's in?\"}";
 
-    public final static String gameLobbyHasBeenCreatedPrivateMessageBody = "{\"text\":\"Lobby for jakubs game starting at 12:00\\n:ballot_box_with_check: jakub\",\"attachments\":[{\"text\":null}]}";
+    private final static String gameLobbyHasBeenCreatedPrivateMessageBody = "{\"text\":\"Lobby for %ss game starting at %s\\n:ballot_box_with_check: %s\",\"attachments\":[{\"text\":null}]}";
 
     private final static String newPlayerJoinedGameNotificationPrivateMessageBody = "{\"text\":\":ballot_box_with_check: %s\",\"attachments\":[{\"text\":null}]}";
 
-    public final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by jakub starting at 12:00\",\"attachments\":[{\"text\":null}]}";
+    private final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by %s starting at %s\",\"attachments\":[{\"text\":null}]}";
+
+    public static String createNoActiveGamesPrivateMessageBody() {
+        return noActiveGamesPrivateMessageBody;
+    }
+
+    public static String createOneActiveGamePrivateMessageBody(final String hostName, final String scheduledTime, final int numberOfPlayers) {
+        return String.format(oneActiveGamePrivateMessageBody, hostName, scheduledTime, numberOfPlayers);
+    }
+
+    public static String createGameInvitePrivateMessageBody(final String proposedTime) {
+        return String.format(gameInvitePrivateMessageBody, proposedTime);
+    }
+
+    public static String createGameInviteChannelMessageBody(final String hostName, final String proposedTime) {
+        return String.format(gameInviteChannelMessageBody, hostName, proposedTime);
+    }
+
+    public static String createGameLobbyHasBeenCreatedPrivateMessageBody(final String hostName, final String proposedTime) {
+        return String.format(gameLobbyHasBeenCreatedPrivateMessageBody, hostName, proposedTime, hostName);
+    }
 
     public static String createNewPlayerJoinedGameNotificationPrivateMessageBody(final String userName) {
         return String.format(newPlayerJoinedGameNotificationPrivateMessageBody, userName);
+    }
+
+    public static String createConfirmationAboutJoiningGamePrivateMessageBody(final String hostName, final String proposedTime) {
+        return String.format(confirmationAboutJoiningGamePrivateMessageBody, hostName, proposedTime);
     }
 }

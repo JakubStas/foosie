@@ -38,11 +38,11 @@ public class GameSetupIntegrationTest extends IntegrationTest {
         // expect private Slack message stating that there are no active games
         mockServerClient.when(getGamesCommandWithNoActiveGameRequest()).respond(response().withStatusCode(200));
         // expect private Slack message about newly created game
-        mockServerClient.when(getNewGameInviteAtTwelvePrivateMessageRequest()).respond(response().withStatusCode(200));
+        mockServerClient.when(getNewGameInviteAtTwelvePrivateMessageRequest(proposedTime)).respond(response().withStatusCode(200));
         // expect public Slack message about newly created game
-        mockServerClient.when(getNewGameInviteAtTwelveChannelMessageRequest()).respond(response().withStatusCode(200));
+        mockServerClient.when(getNewGameInviteAtTwelveChannelMessageRequest(userName, proposedTime)).respond(response().withStatusCode(200));
         // expect private Slack message displaying lobby status
-        mockServerClient.when(getNewGameLobyHasBeenCreatedPrivateMessageRequest()).respond(response().withStatusCode(200));
+        mockServerClient.when(getNewGameLobyHasBeenCreatedPrivateMessageRequest(userName, proposedTime)).respond(response().withStatusCode(200));
 
         slashCommandUtils.slashGamesCommand(userName, responseUrl);
 
@@ -51,33 +51,33 @@ public class GameSetupIntegrationTest extends IntegrationTest {
 
         // then
         mockServerClient.verify(getGamesCommandWithNoActiveGameRequest(), VerificationTimes.exactly(1));
-        mockServerClient.verify(getNewGameInviteAtTwelvePrivateMessageRequest(), VerificationTimes.exactly(1));
-        mockServerClient.verify(getNewGameInviteAtTwelveChannelMessageRequest(), VerificationTimes.exactly(1));
-        mockServerClient.verify(getNewGameLobyHasBeenCreatedPrivateMessageRequest(), VerificationTimes.exactly(1));
+        mockServerClient.verify(getNewGameInviteAtTwelvePrivateMessageRequest(proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(getNewGameInviteAtTwelveChannelMessageRequest(userName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(getNewGameLobyHasBeenCreatedPrivateMessageRequest(userName, proposedTime), VerificationTimes.exactly(1));
 
         // expect private Slack message stating that there is one active game
-        mockServerClient.when(getGamesCommandWithOneActiveGameRequest()).respond(response().withStatusCode(200));
+        mockServerClient.when(getGamesCommandWithOneActiveGameRequest(userName, proposedTime, 1)).respond(response().withStatusCode(200));
         slashCommandUtils.slashGamesCommand(userName, responseUrl);
-        mockServerClient.verify(getGamesCommandWithOneActiveGameRequest(), VerificationTimes.exactly(1));
+        mockServerClient.verify(getGamesCommandWithOneActiveGameRequest(userName, proposedTime, 1), VerificationTimes.exactly(1));
     }
 
     private HttpRequest getGamesCommandWithNoActiveGameRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.noActiveGamesPrivateMessageBody);
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesPrivateMessageBody());
     }
 
-    private HttpRequest getGamesCommandWithOneActiveGameRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.oneActiveGamePrivateMessageBody);
+    private HttpRequest getGamesCommandWithOneActiveGameRequest(final String hostName, final String scheduledTime, final int numberOfPlayers) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createOneActiveGamePrivateMessageBody(hostName, scheduledTime, numberOfPlayers));
     }
 
-    private HttpRequest getNewGameInviteAtTwelveChannelMessageRequest() {
-        return request().withMethod("POST").withPath(incomingWebHookPath).withBody(SlackMessageBodies.gameInviteAtTwelvePostedChannelMessageBody);
+    private HttpRequest getNewGameInviteAtTwelveChannelMessageRequest(final String hostName, final String proposedTime) {
+        return request().withMethod("POST").withPath(incomingWebHookPath).withBody(SlackMessageBodies.createGameInviteChannelMessageBody(hostName, proposedTime));
     }
 
-    private HttpRequest getNewGameInviteAtTwelvePrivateMessageRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.gameInviteAtTwelvePostedPrivateMessageBody);
+    private HttpRequest getNewGameInviteAtTwelvePrivateMessageRequest(final String proposedTime) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createGameInvitePrivateMessageBody(proposedTime));
     }
 
-    private HttpRequest getNewGameLobyHasBeenCreatedPrivateMessageRequest() {
-        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.gameLobbyHasBeenCreatedPrivateMessageBody);
+    private HttpRequest getNewGameLobyHasBeenCreatedPrivateMessageRequest(final String hostName, final String proposedTime) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createGameLobbyHasBeenCreatedPrivateMessageBody(hostName, proposedTime));
     }
 }
