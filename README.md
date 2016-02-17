@@ -94,13 +94,16 @@ https://hooks.slack.com/services/XXX/YYY/ZZZ
 You should specify the last three path segments from this URL as a value of an environment property named `incoming-web-hook-uri`. This will ensure that the bot is be able to post public messages into a channel. You can configure the channel you want it to post to while setting up the incoming webhook.
 
 ## Slack Web API
-Last thing left to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
+Another thing left to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
 
 ```
 https://api.slack.com/web
 ```
 
 You should use the full token as a value of an environment property named `slack.auth-token`. This will ensure that the bot will be able to post private messages to the user (since the full-access has been granted).
+
+## Other properties
+Last thing you can configure is the `foosie.schedule-before` environment property. This property is used once the game lobby becomes full and the game is ready. One of the internal components of Foosie is responsible for automatic scheduling of games. This means that once the game is ready to be kicked off all of the players need to be notified in advance so they can finish whatever they are working on and head for the foosball table. This property tells Foosie how many minutes before the game these players should receive this notification using direct private message.
 
 # Recommended Slack settings
 I am currently using following set of slash commands but feel free to customize it in a way that best suits your and your teams needs.
