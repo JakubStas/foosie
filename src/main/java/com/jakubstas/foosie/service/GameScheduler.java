@@ -57,6 +57,6 @@ public class GameScheduler {
 
         logger.info("Minute match: " + (minutesMatch ? "yes" : "no"));
 
-        return yearMatches && monthMatches && dayMatches && hourMatches && minutesMatch;
+        return game.isReady() && yearMatches && monthMatches && dayMatches && hourMatches && minutesMatch;
     }
 }

@@ -1,5 +1,8 @@
 package com.jakubstas.foosie.service.model;
 
+import com.jakubstas.foosie.validation.TodayButFuture;
+
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,9 +15,10 @@ public class Game {
 
     private User host;
 
+    @Size(min = 0, max = 3)
     private List<User> players = new ArrayList<>();
 
-    //    @TodayButFuture
+    @TodayButFuture
     private Date scheduledTime;
 
     public Game(final User player, final String gameMessageUrl, final Date scheduledTime) {
@@ -45,6 +49,10 @@ public class Game {
 
     public void join(final User player) {
         players.add(player);
+    }
+
+    public boolean isReady() {
+        return players.size() == 3;
     }
 
     public Optional<User> getPlayerByName(final String userName) {
