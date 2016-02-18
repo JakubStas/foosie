@@ -9,7 +9,6 @@ public final class RequestUtils {
 
     @Value("${slack.incoming-web-hook-path}")
     private String incomingWebHookPath;
-    private HttpRequest gameInviteAlreadyPostedPrivateMessageRequest;
 
     public final HttpRequest getInternalErrorPrivateMessageBodyRequest() {
         return request().withBody("POST").withBody("/").withBody(SlackMessageBodies.createInternalErrorPrivateMessageBody());
