@@ -23,7 +23,7 @@ public class ValidationProcessingAspect {
     private SlackService slackService;
 
     @Around("com.jakubstas.foosie.aspect.Pointcuts.inPublicMethodOfGameController(responseUrl)")
-    public void sendAllValidationIssuesToUserInAPrivateMessage(final ProceedingJoinPoint pjp, final String responseUrl) {
+    public void sendAllValidationIssuesToUserInAPrivateMessage(final ProceedingJoinPoint pjp, final String responseUrl) throws Throwable {
         try {
             pjp.proceed();
         } catch (ConstraintViolationException exception) {
@@ -39,6 +39,10 @@ public class ValidationProcessingAspect {
             logger.info("The list of validation errors was returned to the user.");
         } catch (Throwable throwable) {
             logger.error(throwable.getMessage());
+
+            final String message = "Internal error occurred! Please try again and if the issue persists please create an issue here: <https://github.com/JakubStas/foosie/issues/new>";
+            final PrivateReply errorReply = new PrivateReply(message);
+            slackService.postPrivateReplyToMessage(responseUrl, errorReply);
         }
     }
 

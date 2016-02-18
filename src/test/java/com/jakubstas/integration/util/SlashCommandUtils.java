@@ -2,13 +2,11 @@ package com.jakubstas.integration.util;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
-@Component
 public final class SlashCommandUtils {
 
     @Value("${slack.port}")

@@ -2,6 +2,8 @@ package com.jakubstas.integration.util;
 
 final class SlackMessageBodies {
 
+    private final static String internalErrorPrivateMessageBody = "{\"text\":\"Internal error occurred! Please try again and if the issue persists please create an issue here: <https://github.com/JakubStas/foosie/issues/new>\",\"attachments\":[{\"text\":null}]}";
+
     private final static String noActiveGamesPrivateMessageBody = "{\"text\":\"There are no active games right now.\",\"attachments\":[{\"text\":null}]}";
 
     private final static String oneActiveGamePrivateMessageBody = "{\"text\":\"Active games:\\n\\n1. hosted by %s starts at %s (%d player(s))\\n\",\"attachments\":[{\"text\":null}]}";
@@ -15,6 +17,10 @@ final class SlackMessageBodies {
     private final static String newPlayerJoinedGameNotificationPrivateMessageBody = "{\"text\":\":ballot_box_with_check: %s\",\"attachments\":[{\"text\":null}]}";
 
     private final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by %s starting at %s\",\"attachments\":[{\"text\":null}]}";
+
+    static final String createInternalErrorPrivateMessageBody() {
+        return internalErrorPrivateMessageBody;
+    }
 
     static final String createNoActiveGamesPrivateMessageBody() {
         return noActiveGamesPrivateMessageBody;

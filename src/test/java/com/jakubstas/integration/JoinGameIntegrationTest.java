@@ -3,10 +3,12 @@ package com.jakubstas.integration;
 import com.jakubstas.integration.base.IntegrationTestBase;
 import com.jakubstas.integration.util.RequestUtils;
 import com.jakubstas.integration.util.SlashCommandUtils;
+import com.jakubstas.integration.util.TestDataUtils;
 import org.junit.Test;
 import org.mockserver.client.server.MockServerClient;
 import org.mockserver.verify.VerificationTimes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
 
@@ -23,12 +25,16 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
     @Autowired
     private RequestUtils requestUtils;
 
+    @Autowired
+    private TestDataUtils testDataUtils;
+
     @Test
+    @DirtiesContext
     public void userShouldJoinNewGameWithoutSpecifyingHostName() {
         // given
-        final String hostName = "jakub";
+        final String hostName = testDataUtils.generateHostName();
         final String hostId = "123";
-        final String userName = "karol";
+        final String userName = testDataUtils.generatePlayerName();
         final String userId = "456";
         final String proposedTime = getProposedTime();
 
@@ -55,5 +61,7 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
         mockServerClient.verify(requestUtils.getNewGameLobbyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getConfirmationAboutJoiningNewGamePrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(userName), VerificationTimes.exactly(1));
+
+        mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
     }
 }

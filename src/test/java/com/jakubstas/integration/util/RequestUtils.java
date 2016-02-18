@@ -2,15 +2,17 @@ package com.jakubstas.integration.util;
 
 import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import static org.mockserver.model.HttpRequest.request;
 
-@Component
 public final class RequestUtils {
 
     @Value("${slack.incoming-web-hook-path}")
     private String incomingWebHookPath;
+
+    public final HttpRequest getInternalErrorPrivateMessageBodyRequest() {
+        return request().withBody("POST").withBody("/").withBody(SlackMessageBodies.createInternalErrorPrivateMessageBody());
+    }
 
     public final HttpRequest getGamesCommandWithNoActiveGameRequest() {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesPrivateMessageBody());

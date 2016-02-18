@@ -2,6 +2,7 @@ package com.jakubstas.integration.base;
 
 import com.jakubstas.integration.util.RequestUtils;
 import com.jakubstas.integration.util.SlashCommandUtils;
+import com.jakubstas.integration.util.TestDataUtils;
 import org.mockserver.integration.ClientAndServer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,8 +26,13 @@ public class IntegrationTestsConfiguration {
         return new RequestUtils();
     }
 
-    @Bean
+    @Bean(destroyMethod = "stop")
     public ClientAndServer clientAndServer() {
         return new ClientAndServer(slackPort);
+    }
+
+    @Bean
+    public TestDataUtils testDataUtils() {
+        return new TestDataUtils();
     }
 }
