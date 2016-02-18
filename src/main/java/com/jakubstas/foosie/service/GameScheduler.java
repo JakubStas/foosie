@@ -33,7 +33,7 @@ public class GameScheduler {
 
     private final String gameExpiredPrivateMessageTemplate = "Message from Foosie: %ss game has expired! Try hosting a new game later.";
 
-    private final String gameExpiredChannelMessageTemplate = "Message from Foosie: %ss game has expired!";
+    private final String gameExpiredChannelMessageTemplate = "%ss game has expired!";
 
     @Scheduled(fixedRate = 60_000)
     public void kickOffUpcomingGames() throws UnsupportedEncodingException {
