@@ -1,6 +1,8 @@
 package com.jakubstas.integration.util;
 
-public final class SlackMessageBodies {
+final class SlackMessageBodies {
+
+    private final static String internalErrorPrivateMessageBody = "{\"text\":\"Internal error occurred! Please try again and if the issue persists please create an issue here: <https://github.com/JakubStas/foosie/issues/new>\",\"attachments\":[{\"text\":null}]}";
 
     private final static String noActiveGamesPrivateMessageBody = "{\"text\":\"There are no active games right now.\",\"attachments\":[{\"text\":null}]}";
 
@@ -16,31 +18,41 @@ public final class SlackMessageBodies {
 
     private final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by %s starting at %s\",\"attachments\":[{\"text\":null}]}";
 
-    public static String createNoActiveGamesPrivateMessageBody() {
+    private final static String gameInviteAlreadyPostedPrivateMessageBody = "{\"text\":\"Active game created by you already exists! There is nothing left to do but wait :smile:\",\"attachments\":[{\"text\":null}]}";
+
+    static final String createInternalErrorPrivateMessageBody() {
+        return internalErrorPrivateMessageBody;
+    }
+
+    static final String createNoActiveGamesPrivateMessageBody() {
         return noActiveGamesPrivateMessageBody;
     }
 
-    public static String createOneActiveGamePrivateMessageBody(final String hostName, final String scheduledTime, final int numberOfPlayers) {
+    static final String createOneActiveGamePrivateMessageBody(final String hostName, final String scheduledTime, final int numberOfPlayers) {
         return String.format(oneActiveGamePrivateMessageBody, hostName, scheduledTime, numberOfPlayers);
     }
 
-    public static String createGameInvitePrivateMessageBody(final String proposedTime) {
+    static final String createGameInvitePrivateMessageBody(final String proposedTime) {
         return String.format(gameInvitePrivateMessageBody, proposedTime);
     }
 
-    public static String createGameInviteChannelMessageBody(final String hostName, final String proposedTime) {
+    static final String createGameInviteChannelMessageBody(final String hostName, final String proposedTime) {
         return String.format(gameInviteChannelMessageBody, hostName, proposedTime);
     }
 
-    public static String createGameLobbyHasBeenCreatedPrivateMessageBody(final String hostName, final String proposedTime) {
+    static final String createGameLobbyHasBeenCreatedPrivateMessageBody(final String hostName, final String proposedTime) {
         return String.format(gameLobbyHasBeenCreatedPrivateMessageBody, hostName, proposedTime, hostName);
     }
 
-    public static String createNewPlayerJoinedGameNotificationPrivateMessageBody(final String userName) {
+    static final String createNewPlayerJoinedGameNotificationPrivateMessageBody(final String userName) {
         return String.format(newPlayerJoinedGameNotificationPrivateMessageBody, userName);
     }
 
-    public static String createConfirmationAboutJoiningGamePrivateMessageBody(final String hostName, final String proposedTime) {
+    static final String createConfirmationAboutJoiningGamePrivateMessageBody(final String hostName, final String proposedTime) {
         return String.format(confirmationAboutJoiningGamePrivateMessageBody, hostName, proposedTime);
+    }
+
+    public static String createGameInviteAlreadyPostedPrivateMessageBody() {
+        return gameInviteAlreadyPostedPrivateMessageBody;
     }
 }
