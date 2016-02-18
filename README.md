@@ -74,6 +74,13 @@ Upon issuing this command, Foosie will do following things:
 
 In case this command is issued while several active games are waiting for the player, you are presented with a list of the hosts of these active games you may choose from and make use of the first mentioned version of this command.
 
+## Why did my game expire?
+Any game that meets the proposed time but doesn't reach the required number of players expires.
+
+Once this happens, Foosie will do following things:
+* Cancel your game and post a public message to the `#general` channel notifying all the users about the expiration of your game.
+* Send you and all players in the game lobby a private message in the `#general` channel notifying them about the expiration of the game.
+
 # How to set up Foosie
 In this part I will describe how to set up the application itself and the Slack as a client. Since Foosie is using several ways to communicate with Slack, you will need to provide a bit more details than in the normal business-focused application using a single approach. Let's dig in!
 
