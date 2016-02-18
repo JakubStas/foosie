@@ -9,6 +9,7 @@ public final class RequestUtils {
 
     @Value("${slack.incoming-web-hook-path}")
     private String incomingWebHookPath;
+    private HttpRequest gameInviteAlreadyPostedPrivateMessageRequest;
 
     public final HttpRequest getInternalErrorPrivateMessageBodyRequest() {
         return request().withBody("POST").withBody("/").withBody(SlackMessageBodies.createInternalErrorPrivateMessageBody());
@@ -48,5 +49,9 @@ public final class RequestUtils {
 
     public final HttpRequest getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(final String userName) {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNewPlayerJoinedGameNotificationPrivateMessageBody(userName));
+    }
+
+    public final HttpRequest getGameInviteAlreadyPostedPrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createGameInviteAlreadyPostedPrivateMessageBody());
     }
 }

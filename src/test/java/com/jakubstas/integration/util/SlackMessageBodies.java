@@ -18,6 +18,8 @@ final class SlackMessageBodies {
 
     private final static String confirmationAboutJoiningGamePrivateMessageBody = "{\"text\":\"You have successfully joined game by %s starting at %s\",\"attachments\":[{\"text\":null}]}";
 
+    private final static String gameInviteAlreadyPostedPrivateMessageBody = "{\"text\":\"Active game created by you already exists! There is nothing left to do but wait :smile:\",\"attachments\":[{\"text\":null}]}";
+
     static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -48,5 +50,9 @@ final class SlackMessageBodies {
 
     static final String createConfirmationAboutJoiningGamePrivateMessageBody(final String hostName, final String proposedTime) {
         return String.format(confirmationAboutJoiningGamePrivateMessageBody, hostName, proposedTime);
+    }
+
+    public static String createGameInviteAlreadyPostedPrivateMessageBody() {
+        return gameInviteAlreadyPostedPrivateMessageBody;
     }
 }

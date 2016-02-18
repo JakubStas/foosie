@@ -16,6 +16,13 @@ public class TestDataUtils {
         return sdf.format(cal.getTime());
     }
 
+    public final String getProposedTimeInFuture(final int unit, final int number) {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(unit, number);
+
+        return sdf.format(cal.getTime());
+    }
+
     public final String generateHostName() {
         return "host_" + new Date().getTime();
     }

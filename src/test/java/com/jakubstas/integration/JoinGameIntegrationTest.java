@@ -52,13 +52,14 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
 
         slashCommandUtils.slashNewCommand(hostName, hostId, proposedTime);
 
+        mockServerClient.verify(requestUtils.getGameInvitePrivateMessageRequest(proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameLobbyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
+
         // when
         slashCommandUtils.slashIaminCommand(playerName, playerId, Optional.empty());
 
         // then
-        mockServerClient.verify(requestUtils.getGameInvitePrivateMessageRequest(proposedTime), VerificationTimes.exactly(1));
-        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
-        mockServerClient.verify(requestUtils.getNewGameLobbyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getConfirmationAboutJoiningNewGamePrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(playerName), VerificationTimes.exactly(1));
 
