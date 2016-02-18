@@ -29,34 +29,34 @@ public class GameSetupIntegrationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext
     public void newGameInviteShouldBeCreated() {
-        final String userName = testDataUtils.generateHostName();
-        final String userId = "123";
-        final String proposedTime = getProposedTime();
+        final String hostName = testDataUtils.generateHostName();
+        final String hostId = testDataUtils.generateUserId();
+        final String proposedTime = testDataUtils.getProposedTimeInTenMinutes();
 
         // expect private Slack message stating that there are no active games
         mockServerClient.when(requestUtils.getGamesCommandWithNoActiveGameRequest()).respond(response().withStatusCode(200));
         // expect private Slack message about newly created game
         mockServerClient.when(requestUtils.getNewGameInvitePrivateMessageRequest(proposedTime)).respond(response().withStatusCode(200));
         // expect public Slack message about newly created game
-        mockServerClient.when(requestUtils.getNewGameInviteChannelMessageRequest(userName, proposedTime)).respond(response().withStatusCode(200));
+        mockServerClient.when(requestUtils.getNewGameInviteChannelMessageRequest(hostName, proposedTime)).respond(response().withStatusCode(200));
         // expect private Slack message displaying lobby status
-        mockServerClient.when(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(userName, proposedTime)).respond(response().withStatusCode(200));
+        mockServerClient.when(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime)).respond(response().withStatusCode(200));
 
-        slashCommandUtils.slashGamesCommand(userName);
+        slashCommandUtils.slashGamesCommand(hostName);
 
         // when
-        slashCommandUtils.slashNewCommand(userName, userId, proposedTime);
+        slashCommandUtils.slashNewCommand(hostName, hostId, proposedTime);
 
         // then
         mockServerClient.verify(requestUtils.getGamesCommandWithNoActiveGameRequest(), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getNewGameInvitePrivateMessageRequest(proposedTime), VerificationTimes.exactly(1));
-        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(userName, proposedTime), VerificationTimes.exactly(1));
-        mockServerClient.verify(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(userName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
 
         // expect private Slack message stating that there is one active game
-        mockServerClient.when(requestUtils.getGamesCommandWithOneActiveGameRequest(userName, proposedTime, 1)).respond(response().withStatusCode(200));
-        slashCommandUtils.slashGamesCommand(userName);
-        mockServerClient.verify(requestUtils.getGamesCommandWithOneActiveGameRequest(userName, proposedTime, 1), VerificationTimes.exactly(1));
+        mockServerClient.when(requestUtils.getGamesCommandWithOneActiveGameRequest(hostName, proposedTime, 1)).respond(response().withStatusCode(200));
+        slashCommandUtils.slashGamesCommand(hostName);
+        mockServerClient.verify(requestUtils.getGamesCommandWithOneActiveGameRequest(hostName, proposedTime, 1), VerificationTimes.exactly(1));
 
         mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
     }

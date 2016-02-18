@@ -33,10 +33,10 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
     public void userShouldJoinNewGameWithoutSpecifyingHostName() {
         // given
         final String hostName = testDataUtils.generateHostName();
-        final String hostId = "123";
-        final String userName = testDataUtils.generatePlayerName();
-        final String userId = "456";
-        final String proposedTime = getProposedTime();
+        final String hostId = testDataUtils.generateUserId();
+        final String playerName = testDataUtils.generatePlayerName();
+        final String playerId = testDataUtils.generateUserId();
+        final String proposedTime = testDataUtils.getProposedTimeInTenMinutes();
 
         // expect private Slack message about newly created game
         mockServerClient.when(requestUtils.getGameInvitePrivateMessageRequest(proposedTime)).respond(response().withStatusCode(200));
@@ -48,19 +48,19 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
         // expect private Slack message about joining newly created game
         mockServerClient.when(requestUtils.getConfirmationAboutJoiningNewGamePrivateMessageRequest(hostName, proposedTime)).respond(response().withStatusCode(200));
         // expect private Slack message about new client joining the game
-        mockServerClient.when(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(userName)).respond(response().withStatusCode(200));
+        mockServerClient.when(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(playerName)).respond(response().withStatusCode(200));
 
         slashCommandUtils.slashNewCommand(hostName, hostId, proposedTime);
 
         // when
-        slashCommandUtils.slashIaminCommand(userName, userId, Optional.empty());
+        slashCommandUtils.slashIaminCommand(playerName, playerId, Optional.empty());
 
         // then
         mockServerClient.verify(requestUtils.getGameInvitePrivateMessageRequest(proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getNewGameLobbyHasBeenCreatedPrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
         mockServerClient.verify(requestUtils.getConfirmationAboutJoiningNewGamePrivateMessageRequest(hostName, proposedTime), VerificationTimes.exactly(1));
-        mockServerClient.verify(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(userName), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNotificationThatNewPlayerJoinedGamePrivateMessageRequest(playerName), VerificationTimes.exactly(1));
 
         mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
     }
