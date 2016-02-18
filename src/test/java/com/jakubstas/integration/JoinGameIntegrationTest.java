@@ -69,7 +69,6 @@ public class JoinGameIntegrationTest extends IntegrationTest {
 
     private String getProposedTime() {
         final Calendar cal = Calendar.getInstance();
-
         cal.add(Calendar.MINUTE, 10);
 
         return sdf.format(cal.getTime());
