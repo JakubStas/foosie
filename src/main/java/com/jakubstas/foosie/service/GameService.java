@@ -78,7 +78,12 @@ public class GameService {
 
             joinGameByHostName(player, hostName, game, messageUrl);
         } else {
-            if (gamesCache.getNumberOfActiveGames() == 1) {
+            if (gamesCache.getNumberOfActiveGames() == 0) {
+                logger.info("No active games at the moment.");
+
+                final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createNoActiveGamesToJoinPrivateMessageBody());
+                slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
+            } else if (gamesCache.getNumberOfActiveGames() == 1) {
                 // join the only active game
                 final User host = gamesCache.getSetOfHosts().iterator().next();
                 final Game game = gamesCache.findByHostName(host.getUserName());

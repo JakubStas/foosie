@@ -22,6 +22,8 @@ public final class MessageTemplates {
 
     private final static String multipleActiveGamesToJoinPrivateMessageBody = "There are several active games at the moment. Pick the one that you like - %s";
 
+    private final static String noActiveGamesToJoinPrivateMessageBody = "There is no active game at the moment. Try creating a new one yourself!";
+
     public static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -60,5 +62,9 @@ public final class MessageTemplates {
 
     public static final String createMultipleActiveGamesToJoinPrivateMessageBody(final String availableGames) {
         return String.format(multipleActiveGamesToJoinPrivateMessageBody, availableGames);
+    }
+
+    public static final String createNoActiveGamesToJoinPrivateMessageBody() {
+        return noActiveGamesToJoinPrivateMessageBody;
     }
 }
