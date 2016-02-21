@@ -1,12 +1,16 @@
 package com.jakubstas.foosie.service.model;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -42,7 +46,16 @@ public class GamesCache {
         return activeGames.size();
     }
 
-    public Set<User> getSetOfHosts() {
-        return activeGames.keySet();
+    public List<User> getSetOfHosts() {
+        final ArrayList<User> hosts = Lists.newArrayList(activeGames.keySet());
+
+        hosts.sort(new Ordering<User>() {
+            @Override
+            public int compare(@Nullable User left, @Nullable User right) {
+                return left.getUserName().compareTo(right.getUserName());
+            }
+        });
+
+        return ImmutableList.copyOf(hosts);
     }
 }

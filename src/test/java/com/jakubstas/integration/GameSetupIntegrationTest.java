@@ -96,8 +96,8 @@ public class GameSetupIntegrationTest extends IntegrationTestBase {
     @Test
     @DirtiesContext
     public void twoGamesFromDifferentHostsScheduledForTheSameTimeShouldBeCreated() {
-        final String firstHostName = testDataUtils.generateHostName();
-        final String secondHostName = testDataUtils.generateHostName();
+        final String firstHostName = testDataUtils.generateHostName(1);
+        final String secondHostName = testDataUtils.generateHostName(2);
         final String firstHostId = testDataUtils.generateUserId();
         final String secondHostId = testDataUtils.generateUserId();
         final String proposedTime = testDataUtils.getProposedTimeInTenMinutes();
