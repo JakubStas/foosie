@@ -1,5 +1,7 @@
 # Foosie - the foosball bot
 
+[![Build Status](https://travis-ci.org/JakubStas/foosie.svg?branch=master)](https://travis-ci.org/JakubStas/foosie)
+
 Foosie is a simple Slack integration created to help me learn how to plug in custom integration code into Slack and also standardize the way my teammates organize our foosball games during our coffee breaks. There are several approaches I wanted to explore and this is reflected in the different methods of communication between Foosie and Slack.
 
 # How to use Foosie
