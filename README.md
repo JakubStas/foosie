@@ -74,6 +74,13 @@ Upon issuing this command, Foosie will do following things:
 
 If this command is issued while several active games are waiting for the player, you are presented with a list of the hosts of these active games. You may choose a host by using the first version of the command (`/iamin HOSTNAME`).
 
+## Why did my game expire?
+Any game that meets the proposed time but doesn't reach the required number of players expires.
+
+Once this happens, Foosie will do following things:
+* Cancel your game and post a public message to the `#general` channel notifying all the users about the expiration of your game.
+* Send you and all players in the game lobby a private message in the `#general` channel notifying them about the expiration of the game.
+
 # How to set up Foosie
 In this part I will describe how to set up the application itself and Slack as a client. Since Foosie is using several ways to communicate with Slack, you will need to provide some more details than in business-focused applications which commonly use a single approach. Let's dig in!
 
@@ -94,13 +101,16 @@ https://hooks.slack.com/services/XXX/YYY/ZZZ
 You should specify the last three path segments from this URL as a value of an environment property named `incoming-web-hook-uri`. This will ensure that the bot will be able to post public messages into a channel. You can choose the channel to use while setting up the incoming webhook.
 
 ## Slack Web API
-The last thing to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
+Another thing to configure is your Web API authentication token. API authentication is achieved via a bearer token which identifies a single user. In general, you can either use a generated full-access token, or register your application with Slack and use OAuth 2. For the purposes of this application I decided to go with the first option since it requires less setup work and less code. You can generate this token at the bottom of this page.
 
 ```
 https://api.slack.com/web
 ```
 
 You should use the full token as the value of an environment property named `slack.auth-token`. This will ensure that the bot will be able to post private messages to the user (since full-access has been granted).
+
+## Other properties
+The last thing you can configure is the `foosie.schedule-before` environment property. This property is used once the game lobby becomes full and the game is ready. One of the internal components of Foosie is responsible for automatic scheduling of games. Once the game is ready to be kicked off all of the players need to be notified in advance so they can finish whatever they are working on and head for the foosball table. This property tells Foosie how many minutes before the game these players should receive this notification using direct private messages.
 
 # Recommended Slack settings
 I am currently using following set of slash commands but feel free to customize it in a way that best suits your team's needs.
