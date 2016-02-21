@@ -89,6 +89,6 @@ public final class MessageTemplates {
     }
 
     public static final String createSuccessfullyJoinedGamePrivateMessageBody(final String hostName, final String proposedTime) {
-        return String.format(successfullyJoinedGamePrivateMessageBody, hostName);
+        return String.format(successfullyJoinedGamePrivateMessageBody, hostName, proposedTime);
     }
 }
