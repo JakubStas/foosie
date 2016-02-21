@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -87,11 +88,11 @@ public class GameService {
                 joinGameByHostName(player, host.getUserName(), game, messageUrl);
             } else {
                 // provide the host name
-                final String activeHosts = gamesCache.getSetOfHosts().toString();
+                final String activeHosts = gamesCache.getSetOfHosts().stream().map(user -> user.getUserName()).collect(Collectors.toList()).toString();
 
                 logger.info("Several active games at the moment. Presenting {} with following options: {}", player.getUserName(), activeHosts);
 
-                final PrivateReply privateConfirmation = new PrivateReply("There are several active games at the moment. Pick the one that you like - " + activeHosts);
+                final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createMultipleActiveGamesToJoinPrivateMessageBody(activeHosts));
                 slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
             }
         }

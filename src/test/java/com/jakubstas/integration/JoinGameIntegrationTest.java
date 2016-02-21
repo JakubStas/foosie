@@ -79,7 +79,53 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
 
     @Test
     @DirtiesContext
-    public void userShouldJoinNewGameWithoutSpecifyingHostName() {
+    public void userShouldNotJoinAnyOfExistingGamesWithoutSpecifyingHostName() {
+        final String playerName = testDataUtils.generatePlayerName();
+        final String firstHostName = testDataUtils.generateHostName(1);
+        final String secondHostName = testDataUtils.generateHostName(2);
+        final String playerId = testDataUtils.generateUserId();
+        final String firstHostId = testDataUtils.generateUserId();
+        final String secondHostId = testDataUtils.generateUserId();
+        final String proposedTime = testDataUtils.getProposedTimeInTenMinutes();
+
+        createSingleGameExpectations(firstHostName, proposedTime);
+        createSingleGameExpectations(secondHostName, proposedTime);
+
+        slashCommandUtils.slashGamesCommand(firstHostName);
+        mockServerClient.verify(requestUtils.getGamesCommandWithNoActiveGameRequest(), VerificationTimes.exactly(1));
+
+        slashCommandUtils.slashNewCommand(firstHostName, firstHostId, proposedTime);
+        slashCommandUtils.slashNewCommand(secondHostName, secondHostId, proposedTime);
+
+        // expect private Slack message listing available hosts
+        mockServerClient.when(requestUtils.getMultipleActiveGamesToJoinPrivateMessageRequest("[" + firstHostName + "," + secondHostName + "]")).respond(response().withStatusCode(200));
+
+        // expect private Slack message stating that there are two active game
+        mockServerClient.when(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1)).respond(response().withStatusCode(200));
+
+        // verify that new games have been created
+        slashCommandUtils.slashGamesCommand(playerName);
+        mockServerClient.verify(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1), VerificationTimes.exactly(1));
+
+        // when
+        slashCommandUtils.slashIaminCommand(playerName, playerId, Optional.empty());
+
+        // then
+        mockServerClient.verify(requestUtils.getMultipleActiveGamesToJoinPrivateMessageRequest("[" + firstHostName + "," + secondHostName + "]"), VerificationTimes.exactly(1));
+
+        // expect private Slack message stating that there are two active game
+        mockServerClient.when(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1)).respond(response().withStatusCode(200));
+
+        // verify that new games have been created
+        slashCommandUtils.slashGamesCommand(playerName);
+        mockServerClient.verify(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1), VerificationTimes.exactly(2));
+
+        mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
+    }
+
+    @Test
+    @DirtiesContext
+    public void userShouldJoinTheOnlyExistingNewGameWithoutSpecifyingHostName() {
         // given
         final String hostName = testDataUtils.generateHostName();
         final String hostId = testDataUtils.generateUserId();

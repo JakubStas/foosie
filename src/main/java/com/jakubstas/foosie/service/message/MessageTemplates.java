@@ -20,6 +20,8 @@ public final class MessageTemplates {
 
     private final static String gameInviteAlreadyPostedPrivateMessageBody = "Active game created by you already exists! There is nothing left to do but wait :smile:";
 
+    private final static String multipleActiveGamesToJoinPrivateMessageBody = "There are several active games at the moment. Pick the one that you like - %s";
+
     public static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -54,5 +56,9 @@ public final class MessageTemplates {
 
     public static final String createGameInviteAlreadyPostedPrivateMessageBody() {
         return gameInviteAlreadyPostedPrivateMessageBody;
+    }
+
+    public static final String createMultipleActiveGamesToJoinPrivateMessageBody(final String availableGames) {
+        return String.format(multipleActiveGamesToJoinPrivateMessageBody, availableGames);
     }
 }

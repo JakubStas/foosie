@@ -22,6 +22,8 @@ final class SlackMessageBodies {
 
     private final static String twoActiveGamesAtTheSameTimePrivateMessageBody = "{\"text\":\"Active games:\\n\\n1. hosted by %s starts at %s (%d player(s))\\n2. hosted by %s starts at %s (%d player(s))\\n\",\"attachments\":[{\"text\":null}]}";
 
+    private final static String multipleActiveGamesToJoinPrivateMessageBody = "{\"text\":\"There are several active games at the moment. Pick the one that you like - [host_1, host_2]\",\"attachments\":[{\"text\":null}]}";
+
     static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -60,5 +62,9 @@ final class SlackMessageBodies {
 
     static final String createTwoActiveGamesAtTheSameTimePrivateMessageBody(final String firstHostName, final String secondHostName, final String proposedTime, final int numberOfPlayersInFirstGame, final int numberOfPlayersInSecondGame) {
         return String.format(twoActiveGamesAtTheSameTimePrivateMessageBody, firstHostName, proposedTime, numberOfPlayersInFirstGame, secondHostName, proposedTime, numberOfPlayersInSecondGame);
+    }
+
+    static final String createMultipleActiveGamesToJoinPrivateMessageBody(final String activeGames) {
+        return String.format(multipleActiveGamesToJoinPrivateMessageBody, activeGames);
     }
 }
