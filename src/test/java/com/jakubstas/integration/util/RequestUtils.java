@@ -65,4 +65,8 @@ public final class RequestUtils {
     public final HttpRequest getNoActiveGamesToJoinPrivateMessageRequest() {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinPrivateMessageBody());
     }
+
+    public final HttpRequest getNoActiveGamesToJoinByHostPrivateMessageRequest(final String hostName) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinByHostPrivateMessageBody(hostName));
+    }
 }

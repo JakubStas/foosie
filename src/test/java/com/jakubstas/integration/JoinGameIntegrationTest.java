@@ -180,6 +180,26 @@ public class JoinGameIntegrationTest extends IntegrationTestBase {
         mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
     }
 
+    @Test
+    @DirtiesContext
+    public void userShouldNotJoinAnyGameBySpecifyingHostnameWhenNoneExists() {
+        // given
+        final String playerName = testDataUtils.generatePlayerName();
+        final String playerId = testDataUtils.generateUserId();
+        final String hostName = testDataUtils.generateHostName();
+
+        // expect private Slack message about no active games available
+        mockServerClient.when(requestUtils.getNoActiveGamesToJoinByHostPrivateMessageRequest(hostName)).respond(response().withStatusCode(200));
+
+        // when
+        slashCommandUtils.slashIaminCommand(playerName, playerId, Optional.of(hostName));
+
+        // then
+        mockServerClient.verify(requestUtils.getNoActiveGamesToJoinByHostPrivateMessageRequest(hostName), VerificationTimes.exactly(1));
+
+        mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
+    }
+
     private void createSingleGameExpectations(final String hostName, final String proposedTime) {
         // expect private Slack message stating that there are no active games
         mockServerClient.when(requestUtils.getGamesCommandWithNoActiveGameRequest()).respond(response().withStatusCode(200));
