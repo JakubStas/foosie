@@ -107,8 +107,7 @@ public class GameService {
         if (game == null) {
             logger.info("No active game by {} found!", hostName);
 
-            final String noActiveGameMessage = String.format("There is no active game by %s at the moment. Try creating a new one yourself!", hostName);
-            final PrivateReply privateConfirmation = new PrivateReply(noActiveGameMessage);
+            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createNoActiveGamesToJoinByHostPrivateMessageBody(hostName));
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
             return;
@@ -117,20 +116,19 @@ public class GameService {
         if (game.getPlayerByName(hostName).isPresent()) {
             logger.info("{} has already joined {}s game.", hostName, hostName);
 
-            final PrivateReply privateReply = new PrivateReply("You have already joined this game! Nothing left but wait for other players to join in");
+            final PrivateReply privateReply = new PrivateReply(MessageTemplates.createAlreadyJoinedThisGamePrivateMessageBody());
             slackService.postPrivateReplyToMessage(messageUrl, privateReply);
         } else {
             logger.info("Adding {} to {}s game.", hostName, hostName);
 
             game.join(player);
 
-            final PrivateReply userJoinedGameReply = new PrivateReply(":ballot_box_with_check: " + player.getUserName());
+            final PrivateReply userJoinedGameReply = new PrivateReply(MessageTemplates.createGameLobbyPlayerStatusPrivateMessageBody(player.getUserName()));
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), userJoinedGameReply);
 
             logger.info("The host was notified that {} joined their game.", hostName);
 
-            final String privateConfirmationMessage = String.format("You have successfully joined game by %s starting at %s", game.getHost().getUserName(), sdf.format(game.getScheduledTime()));
-            final PrivateReply privateConfirmation = new PrivateReply(privateConfirmationMessage);
+            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createSuccessfullyJoinedGamePrivateMessageBody(game.getHost().getUserName(), sdf.format(game.getScheduledTime())));
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
             logger.info("The user was notified that they joined {}s game.", hostName);

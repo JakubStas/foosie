@@ -24,6 +24,14 @@ public final class MessageTemplates {
 
     private final static String noActiveGamesToJoinPrivateMessageBody = "There is no active game at the moment. Try creating a new one yourself!";
 
+    private final static String noActiveGamesToJoinByHostPrivateMessageBody = "There is no active game by %s at the moment. Try creating a new one yourself!";
+
+    private final static String alreadyJoinedThisGamePrivateMessageBody = "You have already joined this game! Nothing left but wait for other players to join in";
+
+    private final static String gameLobbyPlayerStatusPrivateMessageBody = ":ballot_box_with_check: %s";
+
+    private final static String successfullyJoinedGamePrivateMessageBody = "You have successfully joined game by %s starting at %s";
+
     public static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -66,5 +74,21 @@ public final class MessageTemplates {
 
     public static final String createNoActiveGamesToJoinPrivateMessageBody() {
         return noActiveGamesToJoinPrivateMessageBody;
+    }
+
+    public static final String createNoActiveGamesToJoinByHostPrivateMessageBody(final String hostName) {
+        return String.format(noActiveGamesToJoinByHostPrivateMessageBody, hostName);
+    }
+
+    public static final String createAlreadyJoinedThisGamePrivateMessageBody() {
+        return alreadyJoinedThisGamePrivateMessageBody;
+    }
+
+    public static final String createGameLobbyPlayerStatusPrivateMessageBody(final String hostName) {
+        return String.format(gameLobbyPlayerStatusPrivateMessageBody, hostName);
+    }
+
+    public static final String createSuccessfullyJoinedGamePrivateMessageBody(final String hostName, final String proposedTime) {
+        return String.format(successfullyJoinedGamePrivateMessageBody, hostName);
     }
 }
