@@ -3,7 +3,7 @@
 Foosie is a simple Slack integration created to help me learn how to plug in custom integration code into Slack and also standardize the way my teammates organize our foosball games during our coffee breaks. There are several approaches I wanted to explore and this is reflected in the different methods of communication between Foosie and Slack.
 
 # How to use Foosie
-The user only needs to know a handful of Slash commands to fully master the capabilities of Foosie. In the following paragraphs I will describe how to perform key use cases provided by this bot. The following examples rely on the configuration described in later sections of this read-me file, however you can customize all of these to your liking. Let's take a look at what is available to the end user.
+The user only needs to know a handful of slash commands to fully master the capabilities of Foosie. In the following paragraphs I will describe how to perform key use cases provided by this bot. The following examples rely on the configuration described in later sections of this read-me file, however you can customize all of these to your liking. Let's take a look at what is available to the end user.
 
 ## How do I discover available games?
 If you want to play a game it is useful to first check if someone else has already proposed a time for a game. To do this simply issue following command to the `#general` channel:
