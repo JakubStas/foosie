@@ -1,6 +1,7 @@
 package com.jakubstas.foosie.service;
 
 import com.jakubstas.foosie.rest.PrivateReply;
+import com.jakubstas.foosie.service.message.MessageTemplates;
 import com.jakubstas.foosie.service.model.Game;
 import com.jakubstas.foosie.service.model.GamesCache;
 import com.jakubstas.foosie.service.model.User;
@@ -45,24 +46,21 @@ public class GameService {
 
             logger.info("Created a new game for {} scheduled at {}", userName, proposedTime);
 
-            final String gameCreatedMessage = String.format("Your game invite has been posted. The game is scheduled for %s and following players joined in:", sdf.format(proposedTime));
-            final PrivateReply gameCreatedReply = new PrivateReply(gameCreatedMessage);
+            final PrivateReply gameCreatedReply = new PrivateReply(MessageTemplates.createGameInvitePrivateMessageForHostBody(proposedTimeInHours));
             slackService.postPrivateReplyToMessage(messageUrl, gameCreatedReply);
 
             logger.info("The host {} was notified that their game invite has been registered.", userName);
 
-            final String channelInviteMessage = String.format("%s wants to play a game at %s. Who's in?", userName, sdf.format(proposedTime));
-            slackService.postMessageToChannel(channelInviteMessage);
+            slackService.postMessageToChannel(MessageTemplates.createGameInviteChannelMessageBody(userName, proposedTimeInHours));
 
-            final String hostJoinedGameReplyMessage = String.format("Lobby for %ss game starting at %s\n:ballot_box_with_check: %s", userName, sdf.format(proposedTime), userName);
-            final PrivateReply hostJoinedGameReply = new PrivateReply(hostJoinedGameReplyMessage);
+            final PrivateReply hostJoinedGameReply = new PrivateReply(MessageTemplates.createGameLobbyHasBeenCreatedPrivateMessageBody(userName, proposedTimeInHours));
             slackService.postPrivateReplyToMessage(newGame.getGameMessageUrl(), hostJoinedGameReply);
 
             logger.info("The channel was notified about {}s game invite.", userName);
         } else {
             logger.info("Active game already exists for {}", userName);
 
-            final PrivateReply alreadyActiveHostReply = new PrivateReply("Active game created by you already exists! There is nothing left to do but wait :smile:");
+            final PrivateReply alreadyActiveHostReply = new PrivateReply(MessageTemplates.createGameInviteAlreadyPostedPrivateMessageBody());
             slackService.postPrivateReplyToMessage(messageUrl, alreadyActiveHostReply);
         }
     }
