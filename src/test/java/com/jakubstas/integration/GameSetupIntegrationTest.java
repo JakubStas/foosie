@@ -93,6 +93,42 @@ public class GameSetupIntegrationTest extends IntegrationTestBase {
         mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
     }
 
+    @Test
+    @DirtiesContext
+    public void twoGamesFromDifferentHostsScheduledForTheSameTimeShouldBeCreated() {
+        final String firstHostName = testDataUtils.generateHostName(1);
+        final String secondHostName = testDataUtils.generateHostName(2);
+        final String firstHostId = testDataUtils.generateUserId();
+        final String secondHostId = testDataUtils.generateUserId();
+        final String proposedTime = testDataUtils.getProposedTimeInTenMinutes();
+
+        createSingleGameExpectations(firstHostName, proposedTime);
+        createSingleGameExpectations(secondHostName, proposedTime);
+
+        slashCommandUtils.slashGamesCommand(firstHostName);
+        mockServerClient.verify(requestUtils.getGamesCommandWithNoActiveGameRequest(), VerificationTimes.exactly(1));
+
+        // when
+        slashCommandUtils.slashNewCommand(firstHostName, firstHostId, proposedTime);
+        slashCommandUtils.slashNewCommand(secondHostName, secondHostId, proposedTime);
+
+        // then
+        mockServerClient.verify(requestUtils.getNewGameInvitePrivateMessageRequest(proposedTime), VerificationTimes.exactly(2));
+        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(firstHostName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameInviteChannelMessageRequest(secondHostName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(firstHostName, proposedTime), VerificationTimes.exactly(1));
+        mockServerClient.verify(requestUtils.getNewGameLobyHasBeenCreatedPrivateMessageRequest(secondHostName, proposedTime), VerificationTimes.exactly(1));
+
+        // expect private Slack message stating that there are two active game
+        mockServerClient.when(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1)).respond(response().withStatusCode(200));
+
+        // verify that new games have been created
+        slashCommandUtils.slashGamesCommand(firstHostName);
+        mockServerClient.verify(requestUtils.getTwoActiveGamesAtTheSameTimePrivateMessageRequest(firstHostName, secondHostName, proposedTime, 1, 1), VerificationTimes.exactly(1));
+
+        mockServerClient.verify(requestUtils.getInternalErrorPrivateMessageBodyRequest(), VerificationTimes.exactly(0));
+    }
+
     private void createSingleGameExpectations(final String hostName, final String proposedTime) {
         // expect private Slack message stating that there are no active games
         mockServerClient.when(requestUtils.getGamesCommandWithNoActiveGameRequest()).respond(response().withStatusCode(200));

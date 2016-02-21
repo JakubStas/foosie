@@ -20,6 +20,14 @@ final class SlackMessageBodies {
 
     private final static String gameInviteAlreadyPostedPrivateMessageBody = "{\"text\":\"Active game created by you already exists! There is nothing left to do but wait :smile:\",\"attachments\":[{\"text\":null}]}";
 
+    private final static String twoActiveGamesAtTheSameTimePrivateMessageBody = "{\"text\":\"Active games:\\n\\n1. hosted by %s starts at %s (%d player(s))\\n2. hosted by %s starts at %s (%d player(s))\\n\",\"attachments\":[{\"text\":null}]}";
+
+    private final static String multipleActiveGamesToJoinPrivateMessageBody = "{\"text\":\"There are several active games at the moment. Pick the one that you like - [host_1, host_2]\",\"attachments\":[{\"text\":null}]}";
+
+    private final static String noActiveGamesToJoinPrivateMessageBody = "{\"text\":\"There is no active game at the moment. Try creating a new one yourself!\",\"attachments\":[{\"text\":null}]}";
+
+    private final static String noActiveGameToJoinByHostPrivateMessageBody = "{\"text\":\"There is no active game by %s at the moment. Try creating a new one yourself!\",\"attachments\":[{\"text\":null}]}";
+
     static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -52,7 +60,23 @@ final class SlackMessageBodies {
         return String.format(confirmationAboutJoiningGamePrivateMessageBody, hostName, proposedTime);
     }
 
-    public static String createGameInviteAlreadyPostedPrivateMessageBody() {
+    static final String createGameInviteAlreadyPostedPrivateMessageBody() {
         return gameInviteAlreadyPostedPrivateMessageBody;
+    }
+
+    static final String createTwoActiveGamesAtTheSameTimePrivateMessageBody(final String firstHostName, final String secondHostName, final String proposedTime, final int numberOfPlayersInFirstGame, final int numberOfPlayersInSecondGame) {
+        return String.format(twoActiveGamesAtTheSameTimePrivateMessageBody, firstHostName, proposedTime, numberOfPlayersInFirstGame, secondHostName, proposedTime, numberOfPlayersInSecondGame);
+    }
+
+    static final String createMultipleActiveGamesToJoinPrivateMessageBody(final String activeGames) {
+        return String.format(multipleActiveGamesToJoinPrivateMessageBody, activeGames);
+    }
+
+    static final String createNoActiveGamesToJoinPrivateMessageBody() {
+        return noActiveGamesToJoinPrivateMessageBody;
+    }
+
+    static final String createNoActiveGamesToJoinByHostPrivateMessageBody(final String hostName) {
+        return String.format(noActiveGameToJoinByHostPrivateMessageBody, hostName);
     }
 }

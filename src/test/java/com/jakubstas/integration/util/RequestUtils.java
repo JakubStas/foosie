@@ -53,4 +53,20 @@ public final class RequestUtils {
     public final HttpRequest getGameInviteAlreadyPostedPrivateMessageRequest() {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createGameInviteAlreadyPostedPrivateMessageBody());
     }
+
+    public final HttpRequest getTwoActiveGamesAtTheSameTimePrivateMessageRequest(final String firstHostName, final String secondHostName, final String proposedTime, final int numberOfPlayersInFirstGame, final int numberOfPlayersInSecondGame) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createTwoActiveGamesAtTheSameTimePrivateMessageBody(firstHostName, secondHostName, proposedTime, numberOfPlayersInFirstGame, numberOfPlayersInSecondGame));
+    }
+
+    public final HttpRequest getMultipleActiveGamesToJoinPrivateMessageRequest(final String activeHosts) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createMultipleActiveGamesToJoinPrivateMessageBody(activeHosts));
+    }
+
+    public final HttpRequest getNoActiveGamesToJoinPrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinPrivateMessageBody());
+    }
+
+    public final HttpRequest getNoActiveGamesToJoinByHostPrivateMessageRequest(final String hostName) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinByHostPrivateMessageBody(hostName));
+    }
 }
