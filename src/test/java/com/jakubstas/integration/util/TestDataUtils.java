@@ -24,7 +24,7 @@ public class TestDataUtils {
     }
 
     public final String generateHostName() {
-        return "host_" + new Date().getTime();
+        return "host_" + generateUserId();
     }
 
     public final String generatePlayerName() {
