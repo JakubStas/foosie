@@ -84,7 +84,7 @@ public class CancelGameIntegrationTest extends IntegrationTestBase {
         // given
         final String hostName = testDataUtils.generateHostName();
 
-        // expect private Slack message about canceling newly created game
+        // expect private Slack message about unability newly created game
         mockServerClient.when(requestUtils.getUnableToCancelGamePrivateMessageRequest()).respond(response().withStatusCode(200));
 
         // when

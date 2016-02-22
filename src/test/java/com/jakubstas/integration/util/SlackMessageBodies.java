@@ -34,6 +34,12 @@ final class SlackMessageBodies {
 
     private final static String unableToCancelGamePrivateMessageBody = "{\"text\":\"You have no active games to be cancelled.\",\"attachments\":[{\"text\":null}]}";
 
+    private final static String successfullyRescheduledGamePrivateMessageBody = "{\"text\":\"Your game has been successfully rescheduled to %s!\",\"attachments\":[{\"text\":null}]}";
+
+    private final static String gameRescheduledChannelMessageBody = "{\"text\":\"%ss game has been rescheduled to %s\"}";
+
+    private final static String unableToRescheduleGamePrivateMessageBody = "{\"text\":\"You have no active games to be rescheduled.\",\"attachments\":[{\"text\":null}]}";
+
     static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -96,5 +102,17 @@ final class SlackMessageBodies {
 
     static final String createUnableToCancelGamePrivateMessageBody() {
         return unableToCancelGamePrivateMessageBody;
+    }
+
+    static final String createSuccessfullyRescheduledGamePrivateMessageBody(final String proposedTime) {
+        return String.format(successfullyRescheduledGamePrivateMessageBody, proposedTime);
+    }
+
+    static final String createGameRescheduledChannelMessageBody(final String hostName, final String proposedTime) {
+        return String.format(gameRescheduledChannelMessageBody, hostName, proposedTime);
+    }
+
+    static final String createUnableToRescheduleGamePrivateMessageBody() {
+        return unableToRescheduleGamePrivateMessageBody;
     }
 }

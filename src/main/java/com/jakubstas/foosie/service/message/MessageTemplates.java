@@ -32,11 +32,17 @@ public final class MessageTemplates {
 
     private final static String successfullyJoinedGamePrivateMessageBody = "You have successfully joined game by %s starting at %s";
 
-    private final static String successfullyCanceledGamePrivateMessageBody = "Your game has been successfully cancelled!";
+    private final static String successfullyCancelledGamePrivateMessageBody = "Your game has been successfully cancelled!";
 
-    private final static String gameCanceledChannelMessageBody = "Lobby for %ss game has been closed. The game is cancelled!";
+    private final static String gameCancelledChannelMessageBody = "Lobby for %ss game has been closed. The game is cancelled!";
 
     private final static String unableToCancelGamePrivateMessageBody = "You have no active games to be cancelled.";
+
+    private final static String successfullyRescheduledGamePrivateMessageBody = "Your game has been successfully rescheduled to %s!";
+
+    private final static String gameRescheduledChannelMessageBody = "%ss game has been rescheduled to %s";
+
+    private final static String unableToRescheduleGamePrivateMessageBody = "You have no active games to be rescheduled.";
 
     public static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
@@ -98,15 +104,27 @@ public final class MessageTemplates {
         return String.format(successfullyJoinedGamePrivateMessageBody, hostName, proposedTime);
     }
 
-    public static final String createSuccessfullyCanceledGamePrivateMessageBody() {
-        return successfullyCanceledGamePrivateMessageBody;
-    }
-
-    public static final String createGameCanceledChannelMessageBody(final String hostName) {
-        return String.format(gameCanceledChannelMessageBody, hostName);
+    public static final String createGameCancelledChannelMessageBody(final String hostName) {
+        return String.format(gameCancelledChannelMessageBody, hostName);
     }
 
     public static final String createUnableToCancelGamePrivateMessageBody() {
         return unableToCancelGamePrivateMessageBody;
+    }
+
+    public static final String createSuccessfullyCancelledGamePrivateMessageBody(final String proposedTime) {
+        return String.format(successfullyCancelledGamePrivateMessageBody, proposedTime);
+    }
+
+    public static final String createSuccessfullyRescheduledGamePrivateMessageBody(final String hostName) {
+        return String.format(successfullyRescheduledGamePrivateMessageBody, hostName);
+    }
+
+    public static final String createGameRescheduledChannelMessageBody(final String hostName, final String proposedTime) {
+        return String.format(gameRescheduledChannelMessageBody, hostName, proposedTime);
+    }
+
+    public static final String createUnableToRescheduleGamePrivateMessageBody() {
+        return unableToRescheduleGamePrivateMessageBody;
     }
 }

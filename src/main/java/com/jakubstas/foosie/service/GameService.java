@@ -143,12 +143,12 @@ public class GameService {
 
             gamesCache.cancelGameByHost(userName);
 
-            final PrivateReply hostCancelledGameReply = new PrivateReply(MessageTemplates.createSuccessfullyCanceledGamePrivateMessageBody());
+            final PrivateReply hostCancelledGameReply = new PrivateReply(MessageTemplates.createSuccessfullyCancelledGamePrivateMessageBody(userName));
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameReply);
 
             logger.info("The host was notified that {} joined their game.", userName);
 
-            slackService.postMessageToChannel(MessageTemplates.createGameCanceledChannelMessageBody(userName));
+            slackService.postMessageToChannel(MessageTemplates.createGameCancelledChannelMessageBody(userName));
 
             logger.info("The channel was notified that {}s game has been cancelled.", userName);
         } else {
@@ -165,25 +165,23 @@ public class GameService {
         if (game != null) {
             final Date proposedTime = getProposedTimeAsDate(proposedTimeInHours);
 
-            logger.info("Updating {}s game time from {} to {}", userName, game.getScheduledTime(), sdf.format(proposedTime));
+            logger.info("Updating {}s game time from {} to {}", userName, game.getScheduledTime(), proposedTimeInHours);
 
             game.reschedule(proposedTime);
 
-            final String hostRescheduledGameMessage = String.format("Your game has been successfully rescheduled to %s!", sdf.format(proposedTime));
-            final PrivateReply hostRescheduledGameReply = new PrivateReply(hostRescheduledGameMessage);
+            final PrivateReply hostRescheduledGameReply = new PrivateReply(MessageTemplates.createSuccessfullyRescheduledGamePrivateMessageBody(proposedTimeInHours));
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostRescheduledGameReply);
 
             logger.info("The host was notified that their game was rescheduled.");
 
-            final String hostRescheduledGameReplyMessage = String.format("%ss game has been rescheduled to %s", userName, sdf.format(proposedTime));
-            slackService.postMessageToChannel(hostRescheduledGameReplyMessage);
+            slackService.postMessageToChannel(MessageTemplates.createGameRescheduledChannelMessageBody(userName, proposedTimeInHours));
 
             logger.info("The channel was notified that {}s game has been rescheduled.", userName);
         } else {
             logger.info("There are no active games by {} to update", userName);
 
-            final PrivateReply cancelNotAvaliableReply = new PrivateReply("You have no active games to be rescheduled.");
-            slackService.postPrivateReplyToMessage(responseUrl, cancelNotAvaliableReply);
+            final PrivateReply cancelNotAvailableReply = new PrivateReply(MessageTemplates.createUnableToRescheduleGamePrivateMessageBody());
+            slackService.postPrivateReplyToMessage(responseUrl, cancelNotAvailableReply);
         }
     }
 
