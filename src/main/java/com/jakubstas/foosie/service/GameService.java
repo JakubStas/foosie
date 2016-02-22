@@ -143,19 +143,18 @@ public class GameService {
 
             gamesCache.cancelGameByHost(userName);
 
-            final PrivateReply hostCancelledGameReply = new PrivateReply("Your game has been successfully cancelled!");
+            final PrivateReply hostCancelledGameReply = new PrivateReply(MessageTemplates.createSuccessfullyCanceledGamePrivateMessageBody());
             slackService.postPrivateReplyToMessage(game.getGameMessageUrl(), hostCancelledGameReply);
 
             logger.info("The host was notified that {} joined their game.", userName);
 
-            final String hostCancelledGameReplyMessage = String.format("Lobby for %ss game has been closed. The game is cancelled!", userName);
-            slackService.postMessageToChannel(hostCancelledGameReplyMessage);
+            slackService.postMessageToChannel(MessageTemplates.createGameCanceledChannelMessageBody(userName));
 
             logger.info("The channel was notified that {}s game has been cancelled.", userName);
         } else {
             logger.info("There are no active games by {} to cancel", userName);
 
-            final PrivateReply cancelNotAvailableReply = new PrivateReply("You have no active games to be cancelled.");
+            final PrivateReply cancelNotAvailableReply = new PrivateReply(MessageTemplates.createUnableToCancelGamePrivateMessageBody());
             slackService.postPrivateReplyToMessage(responseUrl, cancelNotAvailableReply);
         }
     }
