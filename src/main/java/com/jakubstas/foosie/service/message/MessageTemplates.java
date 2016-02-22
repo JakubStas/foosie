@@ -32,6 +32,12 @@ public final class MessageTemplates {
 
     private final static String successfullyJoinedGamePrivateMessageBody = "You have successfully joined game by %s starting at %s";
 
+    private final static String successfullyCanceledGamePrivateMessageBody = "Your game has been successfully cancelled!";
+
+    private final static String gameCanceledChannelMessageBody = "Lobby for %ss game has been closed. The game is cancelled!";
+
+    private final static String unableToCancelGamePrivateMessageBody = "You have no active games to be cancelled.";
+
     public static final String createInternalErrorPrivateMessageBody() {
         return internalErrorPrivateMessageBody;
     }
@@ -90,5 +96,17 @@ public final class MessageTemplates {
 
     public static final String createSuccessfullyJoinedGamePrivateMessageBody(final String hostName, final String proposedTime) {
         return String.format(successfullyJoinedGamePrivateMessageBody, hostName, proposedTime);
+    }
+
+    public static final String createSuccessfullyCanceledGamePrivateMessageBody() {
+        return successfullyCanceledGamePrivateMessageBody;
+    }
+
+    public static final String createGameCanceledChannelMessageBody(final String hostName) {
+        return String.format(gameCanceledChannelMessageBody, hostName);
+    }
+
+    public static final String createUnableToCancelGamePrivateMessageBody() {
+        return unableToCancelGamePrivateMessageBody;
     }
 }

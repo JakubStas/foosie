@@ -69,4 +69,16 @@ public final class RequestUtils {
     public final HttpRequest getNoActiveGamesToJoinByHostPrivateMessageRequest(final String hostName) {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinByHostPrivateMessageBody(hostName));
     }
+
+    public final HttpRequest getSuccessfullyCanceledGamePrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createSuccessfullyCanceledGamePrivateMessageBody());
+    }
+
+    public final HttpRequest getCreateGameCanceledChannelMessageRequest(final String hostName) {
+        return request().withMethod("POST").withPath("/channel/hook").withBody(SlackMessageBodies.createGameCanceledChannelMessageBody(hostName));
+    }
+
+    public final HttpRequest getUnableToCancelGamePrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createUnableToCancelGamePrivateMessageBody());
+    }
 }
