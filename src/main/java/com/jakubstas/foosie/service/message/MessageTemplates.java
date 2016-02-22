@@ -104,10 +104,6 @@ public final class MessageTemplates {
         return String.format(successfullyJoinedGamePrivateMessageBody, hostName, proposedTime);
     }
 
-    public static final String createSuccessfullyRescheduledGamePrivateMessageBody(final String hostName) {
-        return String.format(successfullyRescheduledGamePrivateMessageBody, hostName);
-    }
-
     public static final String createGameCancelledChannelMessageBody(final String hostName) {
         return String.format(gameCancelledChannelMessageBody, hostName);
     }
@@ -118,6 +114,10 @@ public final class MessageTemplates {
 
     public static final String createSuccessfullyCancelledGamePrivateMessageBody(final String proposedTime) {
         return String.format(successfullyCancelledGamePrivateMessageBody, proposedTime);
+    }
+
+    public static final String createSuccessfullyRescheduledGamePrivateMessageBody(final String hostName) {
+        return String.format(successfullyRescheduledGamePrivateMessageBody, hostName);
     }
 
     public static final String createGameRescheduledChannelMessageBody(final String hostName, final String proposedTime) {

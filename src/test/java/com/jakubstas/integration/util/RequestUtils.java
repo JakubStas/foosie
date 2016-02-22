@@ -69,4 +69,28 @@ public final class RequestUtils {
     public final HttpRequest getNoActiveGamesToJoinByHostPrivateMessageRequest(final String hostName) {
         return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createNoActiveGamesToJoinByHostPrivateMessageBody(hostName));
     }
+
+    public final HttpRequest getSuccessfullyCanceledGamePrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createSuccessfullyCanceledGamePrivateMessageBody());
+    }
+
+    public final HttpRequest getCreateGameCanceledChannelMessageRequest(final String hostName) {
+        return request().withMethod("POST").withPath("/channel/hook").withBody(SlackMessageBodies.createGameCanceledChannelMessageBody(hostName));
+    }
+
+    public final HttpRequest getUnableToCancelGamePrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createUnableToCancelGamePrivateMessageBody());
+    }
+
+    public final HttpRequest getSuccessfullyRescheduledGamePrivateMessageRequest(final String proposedTime) {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createSuccessfullyRescheduledGamePrivateMessageBody(proposedTime));
+    }
+
+    public final HttpRequest getCreateGameRescheduleChannelMessageRequest(final String hostName, final String proposedTime) {
+        return request().withMethod("POST").withPath("/channel/hook").withBody(SlackMessageBodies.createGameRescheduledChannelMessageBody(hostName, proposedTime));
+    }
+
+    public final HttpRequest getUnableToRescheduleGamePrivateMessageRequest() {
+        return request().withMethod("POST").withPath("/").withBody(SlackMessageBodies.createUnableToRescheduleGamePrivateMessageBody());
+    }
 }
