@@ -129,5 +129,6 @@ All of these Slack integration options can be further customized by providing a 
 ```
 foosie/src/main/resources/avatar.jpg
 ```
+![Foosie avatar](https://raw.github.com/JakubStas/foosie/master/src/main/resources/avatar.jpg)
 
 Image by [Matthew MennoBoy](http://matthew.mennoboy.com/2005/07/14/foosball-desktop-wallpapers/)
