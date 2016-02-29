@@ -30,9 +30,7 @@ public class GamesCache {
         activeGames.remove(hosts.get(0));
     }
 
-    public
-    @Valid
-    Game findByHostName(final String hostName) {
+    public @Valid Game findByHostName(final String hostName) {
         final List<User> hosts = activeGames.keySet().stream().filter(user -> user.getUserName().equals(hostName)).collect(Collectors.toList());
 
         if (hosts.isEmpty()) {

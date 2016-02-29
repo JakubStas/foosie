@@ -11,6 +11,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Validator;
+import java.text.SimpleDateFormat;
 
 @Configuration
 @EnableAutoConfiguration
@@ -32,5 +33,17 @@ public class ApplicationConfiguration {
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
+    }
+
+    @Bean()
+    public ThreadLocal<SimpleDateFormat> simpleDateFormat() {
+        ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
+            @Override
+            protected SimpleDateFormat initialValue() {
+                return new SimpleDateFormat("HH:mm");
+            }
+        };
+
+        return threadLocal;
     }
 }
