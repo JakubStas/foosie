@@ -27,7 +27,8 @@ public class GameService {
 
     private final Logger logger = LoggerFactory.getLogger(GameService.class);
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    @Autowired
+    private ThreadLocal<SimpleDateFormat> sdf;
 
     @Autowired
     private SlackService slackService;
@@ -128,7 +129,7 @@ public class GameService {
 
             logger.info("The host was notified that {} joined their game.", hostName);
 
-            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createSuccessfullyJoinedGamePrivateMessageBody(game.getHost().getUserName(), sdf.format(game.getScheduledTime())));
+            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createSuccessfullyJoinedGamePrivateMessageBody(game.getHost().getUserName(), sdf.get().format(game.getScheduledTime())));
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
             logger.info("The user was notified that they joined {}s game.", hostName);
@@ -218,7 +219,7 @@ public class GameService {
 
             for (final User host : gamesCache.getSetOfHosts()) {
                 final Game game = gamesCache.findByHostName(host.getUserName());
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.format(game.getScheduledTime()), game.getPlayers().size() + 1);
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.get().format(game.getScheduledTime()), game.getPlayers().size() + 1);
                 stringBuffer.append(gameStatus);
                 i++;
             }
