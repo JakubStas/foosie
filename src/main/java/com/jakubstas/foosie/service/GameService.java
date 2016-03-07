@@ -8,6 +8,8 @@ import com.jakubstas.foosie.service.model.User;
 import com.jakubstas.foosie.slack.SlackService;
 import com.jakubstas.foosie.validation.TwentyFourHourFormat;
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -27,8 +28,7 @@ public class GameService {
 
     private final Logger logger = LoggerFactory.getLogger(GameService.class);
 
-    @Autowired
-    private ThreadLocal<SimpleDateFormat> sdf;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("HH:mm");
 
     @Autowired
     private SlackService slackService;
@@ -129,7 +129,8 @@ public class GameService {
 
             logger.info("The host was notified that {} joined their game.", hostName);
 
-            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createSuccessfullyJoinedGamePrivateMessageBody(game.getHost().getUserName(), sdf.get().format(game.getScheduledTime())));
+            final String scheduledTime = dateTimeFormatter.print(game.getScheduledTime().getTime());
+            final PrivateReply privateConfirmation = new PrivateReply(MessageTemplates.createSuccessfullyJoinedGamePrivateMessageBody(game.getHost().getUserName(), scheduledTime));
             slackService.postPrivateReplyToMessage(messageUrl, privateConfirmation);
 
             logger.info("The user was notified that they joined {}s game.", hostName);
@@ -219,7 +220,8 @@ public class GameService {
 
             for (final User host : gamesCache.getSetOfHosts()) {
                 final Game game = gamesCache.findByHostName(host.getUserName());
-                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), sdf.get().format(game.getScheduledTime()), game.getPlayers().size() + 1);
+                final String scheduledTime = dateTimeFormatter.print(game.getScheduledTime().getTime());
+                final String gameStatus = String.format("%d. hosted by %s starts at %s (%d player(s))\n", i, host.getUserName(), scheduledTime, game.getPlayers().size() + 1);
                 stringBuffer.append(gameStatus);
                 i++;
             }
