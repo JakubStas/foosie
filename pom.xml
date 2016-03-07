@@ -78,6 +78,11 @@
             <version>${commons-validator.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
