@@ -29,7 +29,7 @@ Make sure that the proposed time is later on the same day - Times in the past or
 * Send out a public message to the `#general` channel notifying all users of your newly created game.
 * Send you a private message in the `#general` channel presenting you with your games lobby where you can watch as other users join your game.
 
-## How do I propose a new time for a game?
+## How do I propose a new time for a game? 
 There is no need to use slash commands to do this. Simply post a message to the `#general` channel stating your reasons and the time that suits you better.
 
 It is up to the host to reschedule their active game.
