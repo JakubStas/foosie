@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <guava.version>19.0</guava.version>
-        <validator.version>5.2.5.Final</validator.version>
+        <validator.version>7.0.4.Final</validator.version>
         <commons-validator.version>1.5.0</commons-validator.version>
         <mock-server.version>3.10.2</mock-server.version>
     </properties>
